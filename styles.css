@@ -159,7 +159,7 @@ p { text-wrap: pretty; }
 
 /* ---------- Hero ---------- */
 .hero { padding: clamp(1.5rem, 0.5rem + 3vw, 3rem) 0 clamp(3rem, 2rem + 4vw, 5.5rem); }
-.hero-grid { display: grid; grid-template-columns: minmax(0, 0.86fr) minmax(0, 1.14fr); gap: clamp(2rem, 4vw, 4rem); align-items: center; }
+.hero-grid { display: grid; grid-template-columns: minmax(0, min(28rem, 42%)) minmax(0, 1fr); gap: clamp(2rem, 3.5vw, 3.5rem); align-items: center; }
 .hero-kicker {
   display: inline-flex; align-items: center; gap: 0.5rem;
   padding: 0.375rem 0.875rem 0.375rem 0.5rem; border-radius: 999px;
@@ -167,20 +167,20 @@ p { text-wrap: pretty; }
   color: var(--forest); font-size: 0.9375rem; font-weight: 500;
 }
 .hero-kicker svg { width: 1.25rem; height: 1.25rem; color: var(--leaf); }
-.hero h1 { margin-top: 1.25rem; font-size: clamp(2.125rem, 0.9rem + 2.7vw, 3.25rem); line-height: 1.04; letter-spacing: -0.03em; }
+.hero h1 { margin-top: 1.25rem; font-size: clamp(2.125rem, 0.9rem + 2.4vw, 3rem); line-height: 1.04; letter-spacing: -0.03em; }
 .hero-lead { margin-top: 1.5rem; max-width: 34rem; color: var(--ink-soft); font-size: clamp(1.0625rem, 1rem + 0.3vw, 1.25rem); }
 .hero-actions { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 2rem; }
 .hero-facts { display: grid; gap: 0.5rem; margin-top: 2rem; color: var(--ink-2); font-size: 0.9375rem; }
 .hero-facts li { display: flex; align-items: center; gap: 0.5rem; }
 .hero-facts svg { flex: none; width: 1.125rem; height: 1.125rem; color: var(--leaf); }
 
-.hero-demo { position: relative; display: grid; min-width: 0; }
+.hero-demo { position: relative; display: grid; min-width: 0; margin-right: calc((100vw - min(100vw - 2 * var(--gutter), var(--wrap))) / -2 + 1rem); }
 .hero-stage, .hero-toggle { grid-area: 1 / 1; }
 .hero-stage { position: relative; display: grid; }
 /* Panel and phone share one grid cell, so the scene is always as tall as whichever reaches lower */
 .hero-stage > .admin, .hero-stage > .phone { grid-area: 1 / 1; align-self: start; }
-.hero-stage .admin { justify-self: end; width: 73%; }
-.hero-stage .phone { position: relative; z-index: 2; justify-self: start; width: 30%; margin-top: 16%; }
+.hero-stage .admin { justify-self: end; width: 88%; }
+.hero-stage .phone { position: relative; z-index: 2; justify-self: start; width: 26%; margin-top: 13%; }
 .flyer {
   position: absolute; left: 0; top: 0; z-index: 3;
   display: inline-flex; align-items: center; gap: 0.5rem;
@@ -546,6 +546,11 @@ h3 { font-size: clamp(1.25rem, 1.1rem + 0.5vw, 1.5rem); line-height: 1.2; letter
 .site-footer { padding: 2.5rem 0 3rem; }
 .footer-row { display: flex; flex-wrap: wrap; align-items: flex-start; justify-content: space-between; gap: 1.5rem 3rem; }
 .footer-row p { max-width: 44rem; color: var(--ink-2); font-size: 0.875rem; }
+
+/* Mock hosts keep their space before app.js fills them and fade in when it does */
+.phone, .admin { transition: opacity 400ms ease; }
+.phone:empty { aspect-ratio: 336 / 712; opacity: 0; }
+.admin:empty { aspect-ratio: 960 / 620; opacity: 0; }
 
 /* =====================================================================
    Phone mock — 336 × 712 design px (bezel 7), scaled by its container
@@ -919,43 +924,35 @@ h3 { font-size: clamp(1.25rem, 1.1rem + 0.5vw, 1.5rem); line-height: 1.2; letter
 
 /* Narrow admin: drop the sidebar so the working area stays legible */
 @container (max-width: 520px) {
-  .ad-frame { --a: calc(100cqw / 470); aspect-ratio: 470 / 560; }
-  .ad-body { grid-template-columns: minmax(0, 1fr); }
-  .ad-side, .ad-table-head .ad-chip, .ad-url, .ad-summary .ad-btn, .ad-title-row > .ad-btn, .ad-head .ad-who small { display: none; }
-  .ad-cook { --cols: 1.1fr 1.25fr; }
-  .ad-deliv { --cols: 1.35fr 0.8fr 1fr; }
-  .ad-cancel { --cols: 1.3fr 1fr; }
-  .ad-history { --cols: 0.45fr 1.6fr; }
-  .ad-cook .ad-tr > :nth-child(2), .ad-cook .ad-tr > :nth-child(3), .ad-cook .ad-tr > :nth-child(4),
-  .ad-deliv .ad-tr > :nth-child(3), .ad-deliv .ad-tr > :nth-child(4),
-  .ad-cancel .ad-tr > :nth-child(2), .ad-cancel .ad-tr > :nth-child(3), .ad-cancel .ad-tr > :nth-child(5),
-  .ad-history .ad-tr > :nth-child(2) { display: none; }
-  .ad-grid4 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .ad-stats-layout { grid-template-columns: minmax(0, 1fr); }
-  .ad-period, .ad-promo { display: none; }
-  .ad-zones { grid-template-columns: minmax(0, 1fr); }
-  .ad-zone-list { display: none; }
-  .ad-dates span:nth-child(n + 3) { display: none; }
+  .ad-frame:not(.is-full) { --a: calc(100cqw / 470); aspect-ratio: 470 / 560; }
+  .ad-frame:not(.is-full) .ad-body { grid-template-columns: minmax(0, 1fr); }
+  .ad-frame:not(.is-full) .ad-side, .ad-frame:not(.is-full) .ad-table-head .ad-chip, .ad-frame:not(.is-full) .ad-url, .ad-frame:not(.is-full) .ad-summary .ad-btn, .ad-frame:not(.is-full) .ad-title-row > .ad-btn, .ad-frame:not(.is-full) .ad-head .ad-who small { display: none; }
+  .ad-frame:not(.is-full) .ad-cook { --cols: 1.1fr 1.25fr; }
+  .ad-frame:not(.is-full) .ad-deliv { --cols: 1.35fr 0.8fr 1fr; }
+  .ad-frame:not(.is-full) .ad-cancel { --cols: 1.3fr 1fr; }
+  .ad-frame:not(.is-full) .ad-history { --cols: 0.45fr 1.6fr; }
+  .ad-frame:not(.is-full) .ad-cook .ad-tr > :nth-child(2), .ad-frame:not(.is-full) .ad-cook .ad-tr > :nth-child(3), .ad-frame:not(.is-full) .ad-cook .ad-tr > :nth-child(4),
+  .ad-frame:not(.is-full) .ad-deliv .ad-tr > :nth-child(3), .ad-frame:not(.is-full) .ad-deliv .ad-tr > :nth-child(4),
+  .ad-frame:not(.is-full) .ad-cancel .ad-tr > :nth-child(2), .ad-frame:not(.is-full) .ad-cancel .ad-tr > :nth-child(3), .ad-frame:not(.is-full) .ad-cancel .ad-tr > :nth-child(5),
+  .ad-frame:not(.is-full) .ad-history .ad-tr > :nth-child(2) { display: none; }
+  .ad-frame:not(.is-full) .ad-grid4 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .ad-frame:not(.is-full) .ad-stats-layout { grid-template-columns: minmax(0, 1fr); }
+  .ad-frame:not(.is-full) .ad-period, .ad-frame:not(.is-full) .ad-promo { display: none; }
+  .ad-frame:not(.is-full) .ad-zones { grid-template-columns: minmax(0, 1fr); }
+  .ad-frame:not(.is-full) .ad-zone-list { display: none; }
+  .ad-frame:not(.is-full) .ad-dates span:nth-child(n + 3) { display: none; }
 }
 
-/* Hero kitchen panel: no sidebar, three columns, body text ≈12 px on a laptop */
-.ad-frame.is-compact { --a: calc(100cqw / 500); aspect-ratio: 500 / 470; }
-.is-compact .ad-body { grid-template-columns: minmax(0, 1fr); }
-.is-compact .ad-side, .is-compact .ad-url, .is-compact .ad-table-head .ad-chip:nth-of-type(n + 2) { display: none; }
-.is-compact .ad-cook { --cols: 1.15fr 0.95fr 1.4fr; }
-.is-compact .ad-cook .ad-tr > :nth-child(2) { display: grid; }
-.is-compact .ad-cook .ad-tr > :nth-child(3), .is-compact .ad-cook .ad-tr > :nth-child(4) { display: none; }
-@container (max-width: 420px) {
-  .ad-frame.is-compact { --a: calc(100cqw / 400); aspect-ratio: 400 / 470; }
-  .is-compact .ad-cook { --cols: 1.1fr 1.3fr; }
-  .is-compact .ad-cook .ad-tr > :nth-child(2) { display: none; }
-}
+/* Hero: the real panel at full fidelity. When an order lands, the «camera» zooms in on its row and
+   allergy tag (scale set by app.js so the tag reads at its real size), then pulls back out. */
+.ad-frame.is-full .ad-body { transform-origin: var(--zx, 80%) var(--zy, 45%); transition: transform 760ms var(--ease-io); }
+.ad-frame.is-full.is-zoomed .ad-body { transform: scale(var(--zoom, 1.4)); }
 
 /* ---------- Responsive ---------- */
 @media (max-width: 900px) {
   .hero-grid { grid-template-columns: minmax(0, 1fr); }
   .hero h1 { max-width: 18ch; }
-  .hero-demo { width: min(100%, 52rem); }
+  .hero-demo { width: min(100%, 52rem); margin-right: 0; }
 }
 @media (max-width: 960px) {
   .site-nav {
@@ -1024,8 +1021,8 @@ h3 { font-size: clamp(1.25rem, 1.1rem + 0.5vw, 1.5rem); line-height: 1.2; letter
 }
 @media (max-width: 640px) {
   .hero-stage .admin { width: 100%; }
-  .hero-stage .phone { justify-self: end; width: 40%; margin-top: 106%; }
-  .hero-toggle { justify-self: start; margin: 0 0 0.25rem 0.25rem; }
+  .hero-stage .phone { justify-self: start; width: 38%; margin-top: 44%; }
+  .hero-toggle { justify-self: end; margin: 0 0.25rem 0.25rem 0; }
   .logo-tag { display: none; }
   .header-row { gap: 0.625rem; }
   .header-cta { padding: 0 0.875rem; }

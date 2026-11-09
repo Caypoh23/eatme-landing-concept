@@ -65,7 +65,7 @@
       page.append(template(`ad-${name}`));
       $('.ad-pages', frame).append(page);
     });
-    if ('compact' in host.dataset) frame.classList.add('is-compact');
+    if ('full' in host.dataset) frame.classList.add('is-full');
     if (pages.length > 1) {
       // Several pages in one window: the menu highlight slides from item to item.
       frame.classList.add('has-pill');
@@ -148,11 +148,11 @@
     host.innerHTML = cells.join('');
   }
 
-  function mountMocks() {
-    $$('[data-phone]').forEach(buildPhone);
-    $$('[data-admin]').forEach(buildAdmin);
-    $$('[data-calendar]').forEach(buildCalendar);
-    $$('[data-ad-calendar]').forEach(buildAdminCalendar);
+  function mountMocks(root = doc) {
+    $$('[data-phone]', root).forEach(buildPhone);
+    $$('[data-admin]', root).forEach(buildAdmin);
+    $$('[data-calendar]', root).forEach(buildCalendar);
+    $$('[data-ad-calendar]', root).forEach(buildAdminCalendar);
   }
 
   /* ---------------- Header ---------------- */
@@ -239,6 +239,22 @@
     const rows = $('[data-rows]', admin);
     const count = $('.ad-count', admin);
     const toastText = $('[data-toast-text]', admin);
+    const adminFrame = $('.ad-frame', admin);
+    const adminBody = $('.ad-body', adminFrame);
+
+    // The «camera»: zoom in on the new row so its allergy tag reads at the panel's real size.
+    function zoom(row, on) {
+      if (reduceMotion) return;
+      if (on) {
+        const target = ($('.ad-tag', row) || row).getBoundingClientRect();
+        const body = adminBody.getBoundingClientRect();
+        const scale = adminFrame.getBoundingClientRect().width / 960;
+        adminFrame.style.setProperty('--zx', `${target.left + target.width / 2 - body.left}px`);
+        adminFrame.style.setProperty('--zy', `${target.top + target.height / 2 - body.top}px`);
+        adminFrame.style.setProperty('--zoom', String(Math.min(2.4, Math.max(1.3, 1 / scale))));
+      }
+      adminFrame.classList.toggle('is-zoomed', on);
+    }
     const tap = doc.createElement('div');
     tap.className = 'ph-tap';
     screen.append(tap);
@@ -410,9 +426,12 @@
         total += 1;
         rollCount(total);
         setStep(1);
-        await wait(800);
+        await wait(250);
+        zoom(row, true);
+        await wait(1600);
         row.classList.remove('flash');
-        await wait(100);
+        zoom(row, false);
+        await wait(500);
         stage.classList.add('s-courier');
         setStep(2);
         await wait(2000);
@@ -904,13 +923,33 @@
     });
   }
 
-  mountMocks();
+  /* Text first: the page paints from plain HTML, then the mock screens are built — the hero right
+     after the first paint, the sections below the fold in idle time. Their space is reserved in CSS,
+     so nothing shifts when they appear. */
+  const afterPaint = (fn) => requestAnimationFrame(() => window.setTimeout(fn, 0));
+  const idle = (fn) => ('requestIdleCallback' in window ? window.requestIdleCallback(fn, { timeout: 600 }) : window.setTimeout(fn, 60));
+  const later = [
+    () => { mountMocks($('#journey')); initJourney(); },
+    () => { mountMocks($('#app')); initApp(); },
+    () => { mountMocks($('#team')); initTeam(); },
+    () => { mountMocks($('#brand')); initBrand(); },
+  ];
+  function runLater() {
+    const task = later.shift();
+    if (!task) {
+      doc.documentElement.classList.add('is-ready');
+      return;
+    }
+    task();
+    idle(runLater);
+  }
+
   initHeader();
-  initHero();
   initCompare();
-  initJourney();
-  initApp();
-  initTeam();
-  initBrand();
   initForm();
+  afterPaint(() => {
+    mountMocks($('.hero'));
+    initHero();
+    idle(runLater);
+  });
 })();
