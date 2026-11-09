@@ -49,17 +49,74 @@
 
   function buildAdmin(host) {
     host.setAttribute('aria-hidden', 'true');
+    const pages = host.dataset.admin.trim().split(/\s+/);
     const frame = doc.createElement('div');
     frame.className = 'ad-frame';
     frame.innerHTML =
       '<div class="ad-bar"><i></i><i></i><i></i><span class="ad-url">admin.yourbrand.kz</span></div>' +
-      '<div class="ad-body"><div class="ad-side"></div><div class="ad-main"><div class="ad-head"></div><div class="ad-page"></div></div></div>';
+      '<div class="ad-body"><div class="ad-side"></div><div class="ad-main"><div class="ad-head"></div><div class="ad-pages"></div></div></div>';
     $('.ad-side', frame).append(template('ad-side'));
     $('.ad-head', frame).append(template('ad-head'));
-    $('.ad-page', frame).append(template(`ad-${host.dataset.admin}`));
-    const active = $(`.ad-nav [data-key="${host.dataset.nav || host.dataset.admin}"]`, frame);
+    pages.forEach((name, i) => {
+      const page = doc.createElement('div');
+      page.className = i === 0 ? 'ad-page on' : 'ad-page';
+      page.dataset.page = name;
+      page.dataset.pos = i === 0 ? 'on' : 'after';
+      page.append(template(`ad-${name}`));
+      $('.ad-pages', frame).append(page);
+    });
+    if ('compact' in host.dataset) frame.classList.add('is-compact');
+    if (pages.length > 1) {
+      // Several pages in one window: the menu highlight slides from item to item.
+      frame.classList.add('has-pill');
+      const pill = doc.createElement('i');
+      pill.className = 'ad-nav-pill';
+      $('.ad-nav', frame).prepend(pill);
+    }
+    const active = $(`.ad-nav [data-key="${host.dataset.nav || pages[0]}"]`, frame);
     if (active) active.classList.add('on');
     host.append(frame);
+  }
+
+  function placePill(frame) {
+    const pill = $('.ad-nav-pill', frame);
+    const on = $('.ad-nav span.on', frame);
+    if (!pill || !on) return;
+    pill.style.setProperty('--y', `${on.offsetTop}px`);
+    pill.style.setProperty('--h', `${on.offsetHeight}px`);
+  }
+
+  function showAdminPage(frame, name) {
+    const pages = $$('.ad-page', frame);
+    const index = pages.findIndex((page) => page.dataset.page === name);
+    pages.forEach((page, i) => {
+      page.classList.toggle('on', i === index);
+      page.dataset.pos = i < index ? 'before' : i > index ? 'after' : 'on';
+    });
+    $$('.ad-nav [data-key]', frame).forEach((item) => item.classList.toggle('on', item.dataset.key === name));
+    placePill(frame);
+    return pages[index];
+  }
+
+  /* Phone navigation shared by the app tabs and the journey: an iOS push. Only the outgoing and the
+     incoming screens move; screens in between jump without crossing the view. */
+  function preparePush(layers) {
+    layers.forEach((layer, i) => {
+      layer.style.zIndex = String(i + 1);
+      layer.dataset.pos = layer.classList.contains('on') ? 'on' : 'after';
+    });
+  }
+  function pushLayers(layers, index, from) {
+    layers.forEach((layer, i) => {
+      const still = i !== index && i !== from;
+      if (still) layer.style.transition = 'none';
+      layer.classList.toggle('on', i === index);
+      layer.dataset.pos = i < index ? 'before' : i > index ? 'after' : 'on';
+      if (still) {
+        void layer.offsetWidth;
+        layer.style.transition = '';
+      }
+    });
   }
 
   function buildCalendar(host) {
@@ -81,10 +138,21 @@
     host.innerHTML = cells.join('');
   }
 
+  function buildAdminCalendar(host) {
+    const [year, month] = host.dataset.adCalendar.split('-').map(Number);
+    const days = new Date(year, month, 0).getDate();
+    const offset = (new Date(year, month - 1, 1).getDay() + 6) % 7;
+    const cells = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'].map((day) => `<span class="wd">${day}</span>`);
+    for (let i = 0; i < offset; i += 1) cells.push('<span></span>');
+    for (let day = 1; day <= days; day += 1) cells.push(`<span class="${day === 1 ? 'from' : day === days ? 'to' : 'in'}">${day}</span>`);
+    host.innerHTML = cells.join('');
+  }
+
   function mountMocks() {
     $$('[data-phone]').forEach(buildPhone);
     $$('[data-admin]').forEach(buildAdmin);
     $$('[data-calendar]').forEach(buildCalendar);
+    $$('[data-ad-calendar]').forEach(buildAdminCalendar);
   }
 
   /* ---------------- Header ---------------- */
@@ -117,17 +185,17 @@
 
   /* ---------------- Hero: one order's trip ---------------- */
   const ORDERS = [
-    { number: '121023', name: 'Тимур Ахметов', program: 'Стандарт', kcal: 1800, price: `6${NBSP}900${NBSP}₸`,
-      tag: ['red', 'Аллергия:', 'орехи'], window: ['07:00–10:00', 'в день питания'],
+    { number: '121023', name: 'Тимур Ахметов', program: 'Стандарт', kcal: 1800, days: 14, total: `86${NBSP}940${NBSP}₸`,
+      allergy: 'Орехи', tag: ['red', 'Аллергия:', 'орехи'], window: ['07:00–10:00', 'в день питания'],
       courier: 'Адиль Жалелов, зона «Бостандык», 07:00–10:00' },
-    { number: '121024', name: 'Дана Сейткали', program: 'Лайт', kcal: 1200, price: `5${NBSP}900${NBSP}₸`,
-      tag: ['yellow', 'Здоровье:', 'без лактозы'], window: ['18:00–21:00', 'накануне'],
+    { number: '121024', name: 'Дана Сейткали', program: 'Лайт', kcal: 1200, days: 7, total: `37${NBSP}170${NBSP}₸`,
+      allergy: 'Лактоза', tag: ['yellow', 'Здоровье:', 'без лактозы'], window: ['18:00–21:00', 'накануне'],
       courier: 'Ержан Садыков, зона «Медеу», 18:00–21:00 накануне' },
-    { number: '121025', name: 'Рустам Абдиев', program: 'Спорт', kcal: 2600, price: `8${NBSP}400${NBSP}₸`,
-      tag: ['red', 'Аллергия:', 'мёд'], window: ['07:00–10:00', 'в день питания'],
+    { number: '121025', name: 'Рустам Абдиев', program: 'Спорт', kcal: 2600, days: 28, total: `211${NBSP}680${NBSP}₸`,
+      allergy: 'Мёд', tag: ['red', 'Аллергия:', 'мёд'], window: ['07:00–10:00', 'в день питания'],
       courier: 'Нурлан Абенов, зона «Алмалы», 07:00–10:00' },
   ];
-  const TIMING = { step1: 3820, step2: 2300, step3: 3600 };
+  const LOOPS = 3;
 
   function plural(n, one, few, many) {
     const mod10 = n % 10;
@@ -139,6 +207,20 @@
   const kits = (n) => `${n} ${plural(n, 'комплект', 'комплекта', 'комплектов')}`;
   const kcal = (n) => `${n.toLocaleString('ru-RU')}${NBSP}кКал`;
 
+  // The flying order follows a cubic Bézier, sampled into keyframes with easing applied along the path.
+  const easeInOut = (t) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
+  function bezier([p0, p1, p2, p3], t) {
+    const u = 1 - t;
+    return {
+      x: u * u * u * p0.x + 3 * u * u * t * p1.x + 3 * u * t * t * p2.x + t * t * t * p3.x,
+      y: u * u * u * p0.y + 3 * u * u * t * p1.y + 3 * u * t * t * p2.y + t * t * t * p3.y,
+    };
+  }
+  const centerOf = (el, box) => {
+    const r = el.getBoundingClientRect();
+    return { x: r.left + r.width / 2 - box.left, y: r.top + r.height / 2 - box.top };
+  };
+
   function initHero() {
     const figure = $('[data-hero]');
     const stage = $('[data-hero-stage]');
@@ -148,37 +230,95 @@
     const flyer = $('.flyer', stage);
     const flyerText = $('[data-flyer-text]', stage);
     const phone = $('.phone', stage);
-    const layers = $$('.ph-layer', phone);
-    const programLayer = layers.find((layer) => layer.dataset.layer === 'program');
-    const successLayer = layers.find((layer) => layer.dataset.layer === 'success');
+    const screen = $('.ph-screen', phone);
+    const checkoutLayer = $('.ph-layer[data-layer="checkout"]', phone);
+    const successLayer = $('.ph-layer[data-layer="success"]', phone);
+    const cta = $('[data-k="cta"]', checkoutLayer);
+    const replay = $('[data-hero-replay]', figure);
     const admin = $('.admin', stage);
     const rows = $('[data-rows]', admin);
     const count = $('.ad-count', admin);
     const toastText = $('[data-toast-text]', admin);
+    const tap = doc.createElement('div');
+    tap.className = 'ph-tap';
+    screen.append(tap);
 
-    [TIMING.step1, TIMING.step2, TIMING.step3].forEach((ms, i) => steps[i].style.setProperty('--dur', `${ms}ms`));
 
     let total = 30;
     let orderIndex = 0;
     let userPaused = false;
     let inView = false;
     let pageVisible = !doc.hidden;
+    let waiters = [];
+    let frozen = [];
     const running = () => !userPaused && inView && pageVisible;
-    const syncPaused = () => figure.classList.toggle('is-paused', !running());
+
+    // Pausing freezes every running animation of the scene and stops the clock.
+    function syncPaused() {
+      const on = running();
+      figure.classList.toggle('is-paused', !on);
+      if (!on && frozen.length === 0) {
+        frozen = figure.getAnimations({ subtree: true }).filter((animation) => animation.playState === 'running');
+        frozen.forEach((animation) => animation.pause());
+      } else if (on) {
+        frozen.forEach((animation) => animation.play());
+        frozen = [];
+        waiters.forEach((resolve) => resolve());
+        waiters = [];
+      }
+    }
+    const untilRunning = () => (running() ? Promise.resolve() : new Promise((resolve) => waiters.push(resolve)));
+    async function wait(ms) {
+      let left = ms;
+      while (left > 0) {
+        await untilRunning();
+        const started = performance.now();
+        await new Promise((resolve) => window.setTimeout(resolve, Math.min(left, 120)));
+        if (running()) left -= performance.now() - started;
+      }
+    }
 
     const setStep = (active) => steps.forEach((step, i) => {
       step.classList.toggle('is-active', i === active);
       step.classList.toggle('is-done', i < active);
     });
-    const showLayer = (target) => layers.forEach((layer) => layer.classList.toggle('on', layer === target));
 
     function fillOrder(order) {
-      $('[data-k="program"]', programLayer).textContent = order.program;
-      $('[data-k="price"]', programLayer).textContent = order.price;
-      $$('[data-kcal]', programLayer).forEach((chip) => chip.classList.toggle('on', Number(chip.dataset.kcal) === order.kcal));
+      $('[data-k="co-sub"]', checkoutLayer).textContent = `${order.program}, ${order.days} дней`;
+      $('[data-k="co-tags"]', checkoutLayer).innerHTML = `<i>${order.allergy}</i>`;
+      $('[data-k="co-total"]', checkoutLayer).textContent = order.total;
       $('[data-k="order"]', successLayer).textContent = `№${order.number}`;
-      flyerText.textContent = `Заказ №${order.number}: ${order.program}, ${kcal(order.kcal)}`;
+      flyerText.textContent = `Заказ №${order.number}: ${order.program}, ${order.kcal.toLocaleString('ru-RU')}${NBSP}ккал`;
       toastText.textContent = order.courier;
+    }
+
+    /* The finger: a soft touch marker that moves, presses and leaves */
+    let tapAt = null;
+    function placeTap(point) {
+      tapAt = point;
+      tap.animate([{ translate: `${point.x}px ${point.y}px` }, { translate: `${point.x}px ${point.y}px` }], { duration: 1, fill: 'forwards' });
+    }
+    function showTap(visible) {
+      return tap.animate(
+        [{ opacity: visible ? 0 : 1, scale: visible ? 0.6 : 1 }, { opacity: visible ? 1 : 0, scale: visible ? 1 : 0.6 }],
+        { duration: 220, easing: 'ease-out', fill: 'forwards' },
+      ).finished;
+    }
+    async function moveTap(target, duration) {
+      const to = centerOf(target, screen.getBoundingClientRect());
+      const from = tapAt;
+      tapAt = to;
+      await tap.animate([{ translate: `${from.x}px ${from.y}px` }, { translate: `${to.x}px ${to.y}px` }], {
+        duration, easing: 'cubic-bezier(0.45, 0, 0.2, 1)', fill: 'forwards',
+      }).finished;
+    }
+    async function press(target) {
+      tap.classList.remove('is-tapping');
+      void tap.offsetWidth;
+      tap.classList.add('is-tapping');
+      target.classList.add('is-pressed');
+      await tap.animate([{ scale: 1 }, { scale: 0.8, offset: 0.4 }, { scale: 1 }], { duration: 280, easing: 'ease-out' }).finished;
+      target.classList.remove('is-pressed');
     }
 
     function insertRow(order) {
@@ -195,7 +335,7 @@
       if (reduceMotion) {
         wrap.classList.add('in', 'tag-in');
       } else {
-        requestAnimationFrame(() => requestAnimationFrame(() => wrap.classList.add('in', 'flash')));
+        requestAnimationFrame(() => requestAnimationFrame(() => wrap.classList.add('in', 'flash', 'tag-in')));
       }
       return wrap;
     }
@@ -215,74 +355,90 @@
       fresh.animate([{ transform: 'translateY(100%)', opacity: 0 }, { transform: 'translateY(0)', opacity: 1 }], options);
     }
 
-    function fly() {
+    /* The order flies from the success screen into the kitchen table */
+    function flightPath() {
       const box = stage.getBoundingClientRect();
-      const from = ($('.ph-art', successLayer) || phone).getBoundingClientRect();
-      const to = rows.getBoundingClientRect();
-      const x0 = from.left + from.width / 2 - box.left;
-      const y0 = from.top + from.height * 0.4 - box.top;
-      const x1 = to.left + to.width * 0.3 - box.left;
-      const y1 = to.top + 8 - box.top;
-      const lift = Math.max(24, Math.min(y0, y1) - box.height * 0.14);
-      const at = (x, y, s) => `translate(${x}px, ${y}px) translate(-50%, -50%) scale(${s})`;
-      return flyer.animate([
-        { transform: at(x0, y0, 0.7), opacity: 0 },
-        { transform: at(x0, y0 - 24, 1), opacity: 1, offset: 0.15 },
-        { transform: at((x0 + x1) / 2, lift, 1), opacity: 1, offset: 0.55 },
-        { transform: at(x1, y1, 0.9), opacity: 1, offset: 0.9 },
-        { transform: at(x1, y1, 0.85), opacity: 0 },
-      ], { duration: 1300, easing: 'cubic-bezier(0.45, 0.05, 0.25, 1)', fill: 'forwards' }).finished;
+      const p0 = centerOf($('[data-k="order"]', successLayer), box);
+      const target = rows.getBoundingClientRect();
+      const rowHeight = rows.firstElementChild ? rows.firstElementChild.getBoundingClientRect().height : 32;
+      const p3 = { x: target.left + Math.min(target.width * 0.24, 150) - box.left, y: target.top + rowHeight / 2 - box.top };
+      const top = Math.min(p0.y, p3.y);
+      const p1 = { x: p0.x + (p3.x - p0.x) * 0.3, y: top - box.height * 0.13 };
+      const p2 = { x: p3.x - (p3.x - p0.x) * 0.25, y: top - box.height * 0.1 };
+      // Keep the whole label inside the scene, never over the copy column.
+      const half = flyer.offsetWidth / 2 + 6;
+      const fit = (pt) => ({ x: Math.min(box.width - half, Math.max(half, pt.x)), y: Math.max(flyer.offsetHeight, pt.y) });
+      return [p0, p1, p2, p3].map(fit);
+    }
+    function flight(path, from, to, duration) {
+      const frames = [];
+      const n = 16;
+      for (let i = 0; i <= n; i += 1) {
+        const g = from + ((to - from) * i) / n;
+        const point = bezier(path, easeInOut(g));
+        const scale = g < 0.12 ? 0.7 + (g / 0.12) * 0.3 : g > 0.84 ? 1 - ((g - 0.84) / 0.16) * 0.3 : 1;
+        const opacity = g < 0.1 ? g / 0.1 : g > 0.9 ? 1 - (g - 0.9) / 0.1 : 1;
+        frames.push({ transform: `translate(${point.x}px, ${point.y}px) translate(-50%, -50%) scale(${scale})`, opacity, offset: i / n });
+      }
+      return flyer.animate(frames, { duration, easing: 'linear', fill: 'forwards' }).finished;
     }
 
-    // Time only advances while the sequence is visible and not paused.
-    function wait(ms) {
-      return new Promise((resolve) => {
-        let elapsed = 0;
-        let last = performance.now();
-        const tick = (now) => {
-          if (running()) elapsed += Math.min(now - last, 100);
-          last = now;
-          if (elapsed >= ms) resolve();
-          else requestAnimationFrame(tick);
-        };
-        requestAnimationFrame(tick);
-      });
-    }
-
+    // One loop ≈ 7 s: pay → sheet → the order lands in the kitchen with its allergy → courier.
     async function play() {
-      for (;;) {
+      for (let loop = 1; loop <= LOOPS; loop += 1) {
         const order = ORDERS[orderIndex % ORDERS.length];
         orderIndex += 1;
         fillOrder(order);
-        stage.classList.remove('s-tap', 's-courier');
-        showLayer(programLayer);
+        cta.classList.remove('is-loading');
+        successLayer.classList.remove('on');
         setStep(0);
-        await wait(1100);
-        stage.classList.add('s-tap');
-        await wait(420);
-        stage.classList.remove('s-tap');
-        showLayer(successLayer);
-        await wait(1000);
-        await fly();
-        total += 1;
+        await wait(500);
+        const box = screen.getBoundingClientRect();
+        placeTap({ x: box.width * 0.62, y: box.height * 0.97 });
+        await showTap(true);
+        await moveTap(cta, 520);
+        await press(cta);
+        cta.classList.add('is-loading');
+        await wait(600);
+        showTap(false);
+        successLayer.classList.add('on');
+        await wait(700);
+        const path = flightPath();
+        await flight(path, 0, 0.6, 480);
         const row = insertRow(order);
+        await flight(path, 0.6, 1, 320);
+        total += 1;
         rollCount(total);
         setStep(1);
-        await wait(700);
+        await wait(800);
         row.classList.remove('flash');
-        await wait(500);
-        row.classList.add('tag-in');
-        await wait(1100);
+        await wait(100);
         stage.classList.add('s-courier');
         setStep(2);
-        await wait(TIMING.step3);
+        await wait(2000);
+        if (loop === LOOPS) break;
+        stage.classList.remove('s-courier');
+        await wait(320);
       }
+      steps.forEach((step) => step.classList.add('is-done'));
+      const hadFocus = doc.activeElement === toggle;
+      toggle.hidden = true;
+      replay.hidden = false;
+      if (hadFocus) replay.focus();
     }
+
+    replay.addEventListener('click', () => {
+      replay.hidden = true;
+      toggle.hidden = false;
+      stage.classList.remove('s-courier');
+      toggle.focus();
+      play();
+    });
 
     function showStill() {
       const order = ORDERS[0];
       fillOrder(order);
-      showLayer(successLayer);
+      successLayer.classList.add('on');
       total += 1;
       insertRow(order);
       rollCount(total);
@@ -341,30 +497,148 @@
     root.dataset.state = board.dataset.state;
 
     if (reduceMotion) return;
-    // Play the "after" once, shortly after the messy board is in view.
-    const io = new IntersectionObserver((entries) => {
-      if (!entries.some((entry) => entry.isIntersecting)) return;
-      io.disconnect();
-      window.setTimeout(() => {
-        if (!touched) set('after');
-      }, 1800);
-    }, { threshold: 0, rootMargin: '0px 0px -25% 0px' });
-    io.observe(board);
+    // The flip plays once: when the middle of the board reaches 55% of the window height, or when the
+    // whole board has been on screen for 1.5 s without scrolling (tall windows never reach the 55% line).
+    let dwell = 0;
+    const done = () => touched || board.dataset.state === 'after';
+    const check = () => {
+      window.clearTimeout(dwell);
+      if (done()) {
+        window.removeEventListener('scroll', check);
+        return;
+      }
+      const rect = board.getBoundingClientRect();
+      if (rect.top + rect.height / 2 <= window.innerHeight * 0.55) {
+        set('after');
+      } else if (rect.top >= 0 && rect.bottom <= window.innerHeight) {
+        dwell = window.setTimeout(() => { if (!done()) set('after'); }, 1500);
+      }
+    };
+    window.addEventListener('scroll', check, { passive: true });
+    check();
   }
 
-  /* ---------------- Journey (sticky stage + route rail) ---------------- */
+  /* ---------------- Journey (sticky stage, step snap, route rail) ---------------- */
+  function countUp(elements) {
+    elements.forEach((el) => {
+      const final = el.dataset.final || (el.dataset.final = el.textContent);
+      const value = Number(final.replace(/\D/g, ''));
+      const suffix = final.replace(/^[\d\s  ]+/, '');
+      const started = performance.now();
+      const frame = (now) => {
+        const t = Math.min(1, (now - started) / 900);
+        const current = Math.round(value * (1 - Math.pow(1 - t, 3)));
+        el.textContent = t < 1 ? `${current.toLocaleString('ru-RU')}${suffix ? NBSP + suffix : ''}` : final;
+        if (t < 1) requestAnimationFrame(frame);
+      };
+      requestAnimationFrame(frame);
+    });
+  }
+
+  // Each step points at the part of the screen it talks about.
+  function focusScreen(screen) {
+    if (reduceMotion || !screen) return;
+    screen.classList.remove('is-focus');
+    void screen.offsetWidth;
+    screen.classList.add('is-focus');
+    const chips = $$('.ph-prog:first-of-type .ph-chips span', screen);
+    if (chips.length > 1) {
+      chips.forEach((chip, i) => chip.classList.toggle('on', i === 0));
+      window.setTimeout(() => chips.forEach((chip, i) => chip.classList.toggle('on', i === 1)), 550);
+    }
+    const stats = $$('.ad-stat b', screen);
+    if (stats.length) countUp(stats);
+  }
+
+  /* Journey. Desktop: a pinned scene; every ~0.6 screen of scroll is one step, and when a scroll
+     ends the page glides to the next step in the direction of travel (never blocks native scrolling,
+     releases past the first and last step). Phones: swipe cards with dots and «Дальше». */
   function initJourney() {
+    const scroller = $('[data-journey-scroller]');
     const list = $('[data-journey]');
     const stage = $('[data-journey-stage]');
-    if (!list || !stage) return;
+    if (!scroller || !list || !stage) return;
     const steps = $$('.j-step', list);
-    const screens = steps.map((step, index) => {
-      const clone = $('.j-screen', step).cloneNode(true);
-      clone.classList.toggle('on', index === 0);
-      stage.append(clone);
-      return clone;
-    });
+    const n = steps.length;
+    const desktop = () => window.getComputedStyle(stage).display !== 'none';
+
+    /* The scene never swaps devices: the phone and the panel stay on stage. Steps 1–2 navigate inside
+       the phone, step 3 opens «Заказ оплачен» while the phone steps back and the panel comes forward,
+       steps 3–5 navigate inside the panel. */
+    const stages = steps.map((step) => step.dataset.stage.split(':'));
+    const phoneNames = [...new Set(stages.filter(([kind]) => kind === 'phone').map(([, name]) => name))];
+    const pageNames = [...new Set(stages.filter(([kind]) => kind === 'admin').map(([, name]) => name))];
+    stage.innerHTML =
+      `<div class="admin js-admin" data-admin="${pageNames.join(' ')}"></div>` +
+      `<div class="phone js-phone is-push" data-phone="${phoneNames.join(' ')} success"></div>`;
+    buildAdmin($('.js-admin', stage));
+    buildPhone($('.js-phone', stage));
+    $$('[data-calendar]', stage).forEach(buildCalendar);
+    $$('[data-ad-calendar]', stage).forEach(buildAdminCalendar);
+    const adminFrame = $('.js-admin .ad-frame', stage);
+    const phoneLayers = $$('.js-phone .ph-layer', stage);
+    const sheet = phoneLayers.find((layer) => layer.dataset.layer === 'success');
+    const flow = phoneLayers.filter((layer) => layer !== sheet);
+    preparePush(flow);
+    sheet.dataset.pos = 'after';
+    sheet.style.zIndex = String(flow.length + 1);
+    let flowIndex = 0;
+    // The order from step 2 is the first line of the kitchen plan in step 3.
+    const cookRows = $('.ad-page[data-page="cooking"] [data-rows]', adminFrame);
+    if (cookRows) {
+      cookRows.insertAdjacentHTML('afterbegin',
+        '<div class="ad-tr is-new"><span><b>№121023</b><small>Тимур Ахметов</small></span><span><b>Стандарт</b><small>1\u00a0800\u00a0кКал</small></span>' +
+        '<span><b>1 день</b><small>24 сентября</small></span><span><b>07:00–10:00</b><small>в день питания</small></span>' +
+        '<span><i class="ad-tag ad-tag-red"><b>Аллергия:</b> орехи</i></span></div>');
+      const count = $('.ad-page[data-page="cooking"] .ad-count span', adminFrame);
+      if (count) count.textContent = '31 комплект';
+    }
+
+    function showStage(index) {
+      const [kind, name] = stages[index];
+      stage.dataset.focus = kind;
+      if (kind === 'phone') {
+        sheet.classList.remove('on');
+        sheet.dataset.pos = 'after';
+        const target = flow.findIndex((layer) => layer.dataset.layer === name);
+        if (target !== flowIndex) {
+          pushLayers(flow, target, flowIndex);
+          flowIndex = target;
+        }
+        return flow[target];
+      }
+      sheet.classList.add('on');
+      sheet.dataset.pos = 'on';
+      return showAdminPage(adminFrame, name);
+    }
+    stage.dataset.focus = stages[0][0];
+    requestAnimationFrame(() => placePill(adminFrame));
+    window.addEventListener('resize', () => placePill(adminFrame));
+    const headerH = () => $('[data-header]').getBoundingClientRect().height;
+    const unit = () => window.innerHeight * 0.62;
+    const startY = () => window.scrollY + scroller.getBoundingClientRect().top - headerH();
+    const clamp = (i) => Math.min(n - 1, Math.max(0, i));
     let current = -1;
+    let focusTimer = 0;
+
+    function measureRail() {
+      const top = list.getBoundingClientRect().top;
+      const centers = steps.map((step) => {
+        const rect = $('.j-num', step).getBoundingClientRect();
+        return rect.top + rect.height / 2 - top;
+      });
+      list.style.setProperty('--rail-start', `${centers[0]}px`);
+      list.style.setProperty('--rail-end', `${centers[n - 1]}px`);
+      list.style.setProperty('--rail-fill', `${Math.max(0, centers[Math.max(current, 0)] - centers[0])}px`);
+    }
+    function followRail(ms = 420) {
+      const end = performance.now() + ms;
+      const tick = () => {
+        measureRail();
+        if (performance.now() < end) requestAnimationFrame(tick);
+      };
+      requestAnimationFrame(tick);
+    }
 
     function activate(index) {
       if (index === current || index < 0) return;
@@ -372,42 +646,161 @@
       steps.forEach((step, i) => {
         step.classList.toggle('is-active', i === index);
         step.classList.toggle('is-done', i < index);
+        $('.j-head', step).setAttribute('aria-expanded', String(!desktop() || i === index));
       });
-      screens.forEach((screen, i) => screen.classList.toggle('on', i === index));
+      const shown = showStage(index);
+      followRail();
+      updateDots(index);
+      window.clearTimeout(focusTimer);
+      // Scene: the hint starts with the screen's own entrance; cards: once the swipe has settled.
+      focusTimer = window.setTimeout(() => focusScreen(desktop() ? shown : $('.j-screen', steps[index])), desktop() ? 0 : 300);
     }
-    activate(0);
 
-    const io = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) activate(steps.indexOf(entry.target));
-      });
-    }, { rootMargin: '-48% 0px -48% 0px' });
-    steps.forEach((step) => io.observe(step));
-
-    const nums = steps.map((step) => $('.j-num', step));
+    /* Desktop: one wheel or trackpad gesture, or one key press, moves exactly one step. The step
+       animation starts with the gesture itself (no correction after the visitor stops), trackpad
+       momentum is swallowed, and the page is let go past the first and the last step. */
+    const position = () => (window.scrollY - startY()) / unit();
+    let animating = false;
+    let animStart = 0;
+    let animTimer = 0;
+    let lockUntil = 0;
+    let lastAbs = 0;
+    let lastWheel = 0;
     let queued = false;
-    function measureRail() {
-      queued = false;
-      const top = list.getBoundingClientRect().top;
-      const centers = nums.map((num) => {
-        const rect = num.getBoundingClientRect();
-        return rect.top + rect.height / 2 - top;
-      });
-      const start = centers[0];
-      const end = centers[centers.length - 1];
-      const focus = window.innerHeight / 2 - top;
-      list.style.setProperty('--rail-start', `${start}px`);
-      list.style.setProperty('--rail-end', `${end}px`);
-      list.style.setProperty('--rail-fill', `${Math.max(0, Math.min(end - start, focus - start))}px`);
+    let settleTimer = 0;
+
+    function endStep() {
+      animating = false;
+      window.clearTimeout(animTimer);
+      lockUntil = Math.max(lockUntil, performance.now() + 150);
     }
-    const queue = () => {
-      if (queued) return;
-      queued = true;
-      requestAnimationFrame(measureRail);
-    };
-    measureRail();
-    window.addEventListener('scroll', queue, { passive: true });
-    window.addEventListener('resize', queue);
+    // One native smooth scroll per step: the browser animates it on the compositor, so it stays
+    // smooth while the scene changes screens. (Per-frame scrollTo would restart the page's CSS
+    // smooth scrolling on every frame and lag.)
+    function goToStep(index) {
+      const target = clamp(index);
+      const to = startY() + target * unit();
+      activate(target);
+      if (Math.abs(to - window.scrollY) < 2) return;
+      animating = true;
+      animStart = performance.now();
+      lockUntil = animStart + 900;
+      window.clearTimeout(animTimer);
+      animTimer = window.setTimeout(endStep, 900);
+      window.scrollTo({ top: to, behavior: reduceMotion ? 'instant' : 'smooth' });
+    }
+
+    function fromScroll() {
+      queued = false;
+      if (!desktop() || animating) return;
+      activate(clamp(Math.round(position())));
+    }
+
+    // Leaving the scene: up from the first step, down from the last one.
+    const leaving = (pos, dir) => (pos <= 0.02 && dir < 0) || (pos >= n - 1 - 0.02 && dir > 0);
+
+    window.addEventListener('wheel', (event) => {
+      if (!desktop() || event.ctrlKey || Math.abs(event.deltaY) <= Math.abs(event.deltaX)) return;
+      const pos = position();
+      const dir = Math.sign(event.deltaY);
+      if (pos < -0.5 || pos > n - 0.5 || !dir) return;
+      const now = performance.now();
+      const abs = Math.abs(event.deltaY);
+      // A new gesture shows up as a jump in speed after a pause or a decaying momentum tail.
+      const fresh = now - lastWheel > 220 || abs > lastAbs * 1.6 + 4;
+      lastAbs = abs;
+      lastWheel = now;
+      const locked = animating || now < lockUntil;
+      if (!locked && leaving(pos, dir)) return;
+      event.preventDefault();
+      // Momentum is swallowed; a fresh gesture may retarget once the current step is mostly done.
+      const canRetarget = fresh && (!animating || now - animStart > 420);
+      if (locked && !canRetarget) {
+        lockUntil = Math.max(lockUntil, now + 200);
+        return;
+      }
+      if (animating && leaving(clamp(Math.round(pos)), dir)) return;
+      const k = Math.round(pos);
+      const onStep = Math.abs(pos - k) < 0.02;
+      goToStep(onStep ? k + dir : dir > 0 ? Math.ceil(pos) : Math.floor(pos));
+    }, { passive: false });
+
+    window.addEventListener('keydown', (event) => {
+      if (!desktop() || event.defaultPrevented || event.altKey || event.ctrlKey || event.metaKey) return;
+      if (event.target.closest('input, textarea, select, [contenteditable], [role="tablist"], [role="radiogroup"]')) return;
+      if (event.key === ' ' && event.target.closest('button, a, summary')) return;
+      const dir = event.key === 'ArrowDown' || event.key === 'PageDown' || (event.key === ' ' && !event.shiftKey) ? 1
+        : event.key === 'ArrowUp' || event.key === 'PageUp' || (event.key === ' ' && event.shiftKey) ? -1 : 0;
+      const pos = position();
+      if (!dir || pos < -0.5 || pos > n - 0.5 || leaving(pos, dir)) return;
+      event.preventDefault();
+      if (animating && performance.now() - animStart < 420) return;
+      const k = Math.round(pos);
+      goToStep(Math.abs(pos - k) < 0.02 ? k + dir : dir > 0 ? Math.ceil(pos) : Math.floor(pos));
+    });
+
+    // Scrollbar drags and touch screens scroll natively; when they stop inside the scene, settle on the nearest step.
+    function settleNearest() {
+      if (!desktop() || animating || performance.now() - lastWheel < 400) return;
+      const pos = position();
+      if (pos < -0.3 || pos > n - 1 + 0.3) return;
+      if (Math.abs(pos - Math.round(pos)) > 0.02) goToStep(Math.round(pos));
+    }
+    window.addEventListener('scroll', () => {
+      if (!queued) {
+        queued = true;
+        requestAnimationFrame(fromScroll);
+      }
+      if (animating) return;
+      window.clearTimeout(settleTimer);
+      settleTimer = window.setTimeout(settleNearest, 'onscrollend' in window ? 500 : 180);
+    }, { passive: true });
+    if ('onscrollend' in window) {
+      window.addEventListener('scrollend', () => {
+        if (animating) {
+          endStep();
+          return;
+        }
+        window.clearTimeout(settleTimer);
+        settleNearest();
+      });
+    }
+    steps.forEach((step, i) => $('.j-head', step).addEventListener('click', () => {
+      if (desktop()) goToStep(i);
+    }));
+
+    /* Phones: swipe cards */
+    const nav = $('[data-journey-nav]');
+    const next = $('[data-journey-next]', nav);
+    const dots = steps.map((_, i) => {
+      const dot = doc.createElement('button');
+      dot.type = 'button';
+      dot.setAttribute('aria-label', `Шаг ${i + 1}`);
+      dot.addEventListener('click', () => goCard(i));
+      $('.journey-dots', nav).append(dot);
+      return dot;
+    });
+    function updateDots(index) {
+      dots.forEach((dot, i) => {
+        if (i === index) dot.setAttribute('aria-current', 'step');
+        else dot.removeAttribute('aria-current');
+      });
+      next.textContent = index === n - 1 ? 'Сначала' : 'Дальше';
+    }
+    const cardUnit = () => steps[1].offsetLeft - steps[0].offsetLeft;
+    function goCard(index) {
+      list.scrollTo({ left: index * cardUnit(), behavior: reduceMotion ? 'auto' : 'smooth' });
+    }
+    next.addEventListener('click', () => goCard(current >= n - 1 ? 0 : current + 1));
+    list.addEventListener('scroll', () => {
+      if (!desktop()) activate(clamp(Math.round(list.scrollLeft / cardUnit())));
+    }, { passive: true });
+
+    activate(0);
+    window.addEventListener('resize', () => {
+      measureRail();
+      fromScroll();
+    });
   }
 
   /* ---------------- Tabs (ARIA, roving tabindex) ---------------- */
@@ -448,12 +841,21 @@
     const panel = $('#app-panel');
     const layers = $$('.ph-layer', panel);
     const caption = $('[data-app-caption]', panel);
+    preparePush(layers);
+    let shown = 0;
     initTabs(root, (index, tab) => {
-      layers.forEach((layer, i) => layer.classList.toggle('on', i === index));
+      pushLayers(layers, index, shown);
+      shown = index;
       panel.setAttribute('aria-labelledby', tab.id);
       if (caption) caption.textContent = `На экране телефона: ${$('b', tab).textContent}.`;
       const desc = $('[data-app-desc]', root);
-      if (desc) desc.textContent = $('.app-tab-text > span', tab).textContent;
+      if (desc) {
+        desc.classList.add('is-swapping');
+        window.setTimeout(() => {
+          desc.textContent = $('.app-tab-text > span', tab).textContent;
+          desc.classList.remove('is-swapping');
+        }, 140);
+      }
     });
   }
 
@@ -461,25 +863,20 @@
     const root = $('[data-tabs="team"]');
     if (!root) return;
     const panels = $$('[role="tabpanel"]', root);
+    const frame = $('.team-visual .ad-frame', root);
+    const pages = $$('.ad-page', frame).map((page) => page.dataset.page);
+    requestAnimationFrame(() => placePill(frame));
+    window.addEventListener('resize', () => placePill(frame));
+    // Same window, other page: the text crossfades in place and the panel navigates.
     initTabs(root, (index) => {
-      panels.forEach((panel, i) => {
-        if (i !== index) {
-          panel.hidden = true;
-          return;
-        }
-        if (!panel.hidden) return;
-        panel.hidden = false;
-        if (reduceMotion) return;
-        panel.classList.remove('is-entering');
-        void panel.offsetWidth;
-        panel.classList.add('is-entering');
-        const map = $('.ad-map', panel);
-        if (map) {
-          map.classList.remove('zones-draw');
-          void map.offsetWidth;
-          map.classList.add('zones-draw');
-        }
-      });
+      panels.forEach((panel, i) => panel.classList.toggle('is-active', i === index));
+      const page = showAdminPage(frame, pages[index]);
+      const map = $('.ad-map', page);
+      if (map && !reduceMotion) {
+        map.classList.remove('zones-draw');
+        void map.offsetWidth;
+        map.classList.add('zones-draw');
+      }
     });
   }
 
@@ -489,7 +886,12 @@
     const stage = $('.brand-stage');
     if (!pick || !stage) return;
     pick.addEventListener('change', (event) => {
-      if (event.target.name === 'brand') stage.dataset.brand = event.target.value;
+      if (event.target.name !== 'brand') return;
+      stage.dataset.brand = event.target.value;
+      const icon = $('.store-icon', stage);
+      icon.classList.remove('is-pop');
+      void icon.offsetWidth;
+      icon.classList.add('is-pop');
     });
   }
 
@@ -499,9 +901,11 @@
     const done = $('[data-demo-done]');
     if (!form || !done) return;
     const digits = (value) => value.replace(/\D/g, '');
+    const isEmail = (value) => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(value.trim());
+    const isPhone = (value) => /^[\d\s()+-]+$/.test(value.trim()) && digits(value).length >= 10 && digits(value).length <= 12;
     const rules = {
       name: (value) => value.trim().length >= 2,
-      phone: (value) => digits(value).length >= 10 && digits(value).length <= 12,
+      contact: (value) => isEmail(value) || isPhone(value),
     };
     const fields = $$('input[required]', form);
     const errorOf = (input) => doc.getElementById(input.getAttribute('aria-describedby'));
@@ -522,11 +926,12 @@
       });
     });
 
-    const phone = $('#f-phone', form);
-    phone.addEventListener('blur', () => {
-      const d = digits(phone.value);
+    const contact = $('#f-contact', form);
+    contact.addEventListener('blur', () => {
+      if (!isPhone(contact.value)) return;
+      const d = digits(contact.value);
       if (d.length === 11 && (d[0] === '7' || d[0] === '8')) {
-        phone.value = `+7 ${d.slice(1, 4)} ${d.slice(4, 7)} ${d.slice(7, 9)} ${d.slice(9, 11)}`;
+        contact.value = `+7 ${d.slice(1, 4)} ${d.slice(4, 7)} ${d.slice(7, 9)} ${d.slice(9, 11)}`;
       }
     });
 

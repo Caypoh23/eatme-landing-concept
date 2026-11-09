@@ -6,8 +6,8 @@
 <meta name="robots" content="noindex, nofollow">
 <meta name="color-scheme" content="light">
 <meta name="theme-color" content="#f5f5fa">
-<title>EatMe для бизнеса — приложение и панель для доставки рационов (концепт)</title>
-<meta name="description" content="Концепт лендинга: готовое приложение для клиентов и панель для команды сервиса доставки рационов питания.">
+<title>EatMe для бизнеса — приложение и панель для доставки рационов</title>
+<meta name="description" content="Готовое приложение для клиентов и панель для команды сервиса доставки рационов питания: заказы, кухня, курьеры и выручка в одной системе.">
 <link rel="stylesheet" href="styles.css">
 <script src="app.js" defer></script>
 </head>
@@ -46,14 +46,14 @@
           <svg aria-hidden="true"><use href="#i-check-verified"/></svg>
           Для сервисов доставки рационов питания
         </p>
-        <h1 id="hero-title">Клиент заказал в&nbsp;приложении&nbsp;— кухня уже знает, что готовить</h1>
-        <p class="hero-lead">EatMe&nbsp;— готовое приложение для ваших клиентов и&nbsp;панель для вашей команды. Меню, заказы, кухня, курьеры и&nbsp;выручка&nbsp;— в&nbsp;одной системе и&nbsp;под вашим брендом.</p>
+        <h1 id="hero-title">Приложение для ваших клиентов и&nbsp;панель для вашей команды</h1>
+        <p class="hero-lead">Клиент сам выбирает и&nbsp;оплачивает рацион. Заказ сразу попадает в&nbsp;план кухни с&nbsp;пометкой об&nbsp;аллергии, а&nbsp;курьер нужного района назначается автоматически.</p>
         <div class="hero-actions">
           <a class="btn btn-primary btn-lg" href="#demo">Получить демо</a>
           <a class="btn btn-quiet btn-lg" href="#journey">Как это работает</a>
         </div>
         <ul class="hero-facts">
-          <li><svg aria-hidden="true"><use href="#i-check-circle"/></svg>Приложение для iOS и&nbsp;Android</li>
+          <li><svg aria-hidden="true"><use href="#i-check-circle"/></svg>Приложение под вашим брендом для iOS и&nbsp;Android</li>
           <li><svg aria-hidden="true"><use href="#i-check-circle"/></svg>Оплата через Kaspi и&nbsp;картой</li>
           <li><svg aria-hidden="true"><use href="#i-check-circle"/></svg>Русский, казахский, английский, узбекский</li>
         </ul>
@@ -62,21 +62,23 @@
       <figure class="hero-demo" data-hero>
         <div class="hero-stage" data-hero-stage role="img"
              aria-label="Пример работы: клиент оплачивает рацион в приложении, заказ сразу появляется в плане приготовления на кухне вместе с аллергией, а курьер назначается автоматически.">
-          <div class="admin" data-admin="cooking" data-nav="cooking"></div>
-          <div class="phone" data-phone="program success"></div>
+          <div class="admin" data-admin="cooking" data-nav="cooking" data-compact></div>
+          <div class="phone" data-phone="checkout success"></div>
           <div class="flyer" aria-hidden="true"><span class="flyer-dot"></span><span data-flyer-text>Заказ №121023</span></div>
         </div>
+        <button class="hero-toggle" type="button" data-hero-toggle aria-pressed="false" aria-label="Пауза">
+          <svg class="when-playing" aria-hidden="true"><use href="#i-pause"/></svg>
+          <svg class="when-paused" aria-hidden="true"><use href="#i-play"/></svg>
+        </button>
+        <button class="hero-toggle hero-replay" type="button" data-hero-replay aria-label="Показать ещё раз" hidden>
+          <svg aria-hidden="true"><use href="#i-refresh-ccw-05"/></svg>
+        </button>
         <figcaption class="hero-steps">
           <ol>
-            <li data-hero-step><span class="hs-bar"><i></i></span><span class="hs-text"><b>1</b>Клиент оплатил рацион в&nbsp;вашем приложении</span></li>
-            <li data-hero-step><span class="hs-bar"><i></i></span><span class="hs-text"><b>2</b>Заказ сразу попал в&nbsp;план кухни&nbsp;— вместе с&nbsp;аллергией</span></li>
-            <li data-hero-step><span class="hs-bar"><i></i></span><span class="hs-text"><b>3</b>Курьер его зоны назначен автоматически</span></li>
+            <li data-hero-step><b>1</b><span>Клиент оплатил рацион в&nbsp;вашем приложении</span></li>
+            <li data-hero-step><b>2</b><span>Заказ сразу попал в&nbsp;план кухни&nbsp;— вместе с&nbsp;аллергией</span></li>
+            <li data-hero-step><b>3</b><span>Курьер нужного района назначен сам</span></li>
           </ol>
-          <button class="hero-toggle" type="button" data-hero-toggle aria-pressed="false">
-            <svg class="when-playing" aria-hidden="true"><use href="#i-pause"/></svg>
-            <svg class="when-paused" aria-hidden="true"><use href="#i-play"/></svg>
-            <span>Пауза</span>
-          </button>
         </figcaption>
       </figure>
     </div>
@@ -86,8 +88,8 @@
   <section class="section compare-section" id="chaos" aria-labelledby="chaos-title">
     <div class="wrap">
       <div class="section-head">
-        <h2 id="chaos-title">В&nbsp;переписке и&nbsp;таблицах заказы теряются. В&nbsp;EatMe&nbsp;— нет</h2>
-        <p>Пока клиентов десять, хватает WhatsApp и&nbsp;Excel. Когда их&nbsp;сотни, кухня путает аллергии, курьеры звонят уточнить адрес, а&nbsp;выручку считают в&nbsp;конце месяца.</p>
+        <h2 id="chaos-title">WhatsApp и&nbsp;Excel хватает на&nbsp;десять клиентов. На&nbsp;сотню&nbsp;— уже нет</h2>
+        <p>Когда клиентов сотни, кухня путает аллергии, курьеры звонят уточнить адрес, а&nbsp;выручку считают в&nbsp;конце месяца.</p>
       </div>
 
       <div class="compare" data-compare>
@@ -99,83 +101,66 @@
 
         <ul class="compare-board" data-state="before">
           <li class="cmp" style="--i:0; --bx:-14px; --by:18px; --br:-3.5deg">
-            <div class="cmp-face cmp-before cmp-chat">
-              <span class="cmp-from">Мама Тимура <time>07:12</time></span>
+            <div class="cmp-inner">
+              <div class="cmp-face cmp-before cmp-chat">
+                <span class="cmp-from">Мама Тимура <time>07:12</time></span>
               Можно без орехов? У&nbsp;сына аллергия
-            </div>
-            <div class="cmp-face cmp-after">
-              <span class="cmp-icon"><svg aria-hidden="true"><use href="#i-hearts"/></svg></span>
+              </div>
+              <div class="cmp-face cmp-after">
+                <span class="cmp-icon"><svg aria-hidden="true"><use href="#i-hearts"/></svg></span>
               <div>
                 <span class="tag tag-red"><b>Аллергия:</b> орехи</span>
                 <p>Клиент отметил сам при оформлении. Кухня видит это в&nbsp;плане приготовления</p>
               </div>
+              </div>
             </div>
           </li>
           <li class="cmp" style="--i:1; --bx:22px; --by:-10px; --br:2.5deg">
-            <div class="cmp-face cmp-before cmp-note">
+            <div class="cmp-inner">
+              <div class="cmp-face cmp-before cmp-note">
               Кето 1800&nbsp;— 14&nbsp;или&nbsp;15&nbsp;порций??
-            </div>
-            <div class="cmp-face cmp-after">
-              <span class="cmp-icon"><svg aria-hidden="true"><use href="#i-package-search"/></svg></span>
+              </div>
+              <div class="cmp-face cmp-after">
+                <span class="cmp-icon"><svg aria-hidden="true"><use href="#i-package-search"/></svg></span>
               <div>
-                <b class="cmp-title">Кето, 1&nbsp;800&nbsp;кКал&nbsp;— 15&nbsp;комплектов</b>
+                <b class="cmp-title">Кето, 1&nbsp;800&nbsp;ккал&nbsp;— 15&nbsp;комплектов</b>
                 <p>План приготовления посчитан автоматически по&nbsp;оплаченным заказам</p>
               </div>
-            </div>
-          </li>
-          <li class="cmp" style="--i:2; --bx:-6px; --by:26px; --br:4deg">
-            <div class="cmp-face cmp-before cmp-chat">
-              <span class="cmp-from">Данияр <time>23:48</time></span>
-              Заморозьте, пожалуйста, с&nbsp;понедельника&nbsp;— улетаем
-            </div>
-            <div class="cmp-face cmp-after">
-              <span class="cmp-icon"><svg aria-hidden="true"><use href="#i-delivery-resume"/></svg></span>
-              <div>
-                <span class="tag tag-yellow"><b>Пауза:</b> 17–20&nbsp;ноября</span>
-                <p>Клиент поставил её сам в&nbsp;приложении. Доставки возобновятся 21&nbsp;ноября</p>
               </div>
             </div>
           </li>
-          <li class="cmp" style="--i:3; --bx:16px; --by:-22px; --br:-2deg">
-            <div class="cmp-face cmp-before cmp-call">
-              <span class="cmp-call-icon"><svg aria-hidden="true"><use href="#i-phone-missed"/></svg></span>
-              <span><b>Ержан, курьер</b><small>Пропущенные вызовы (3)</small></span>
+          <li class="cmp" style="--i:2; --bx:16px; --by:-22px; --br:-2deg">
+            <div class="cmp-inner">
+              <div class="cmp-face cmp-before cmp-call">
+                <span class="cmp-call-icon"><svg aria-hidden="true"><use href="#i-phone-missed"/></svg></span>
+                <span><b>Ержан, курьер</b><small>Пропущенные вызовы (3)</small></span>
               <em>«Не могу найти подъезд»</em>
-            </div>
-            <div class="cmp-face cmp-after">
-              <span class="cmp-icon"><svg aria-hidden="true"><use href="#i-map-pin"/></svg></span>
+              </div>
+              <div class="cmp-face cmp-after">
+                <span class="cmp-icon"><svg aria-hidden="true"><use href="#i-map-pin"/></svg></span>
               <div>
                 <b class="cmp-title">Адрес с&nbsp;точкой на&nbsp;карте</b>
                 <p>Клиент ставит точку при оформлении, заказ уходит курьеру его зоны</p>
               </div>
+              </div>
             </div>
           </li>
-          <li class="cmp" style="--i:4; --bx:-20px; --by:-6px; --br:1.5deg">
-            <div class="cmp-face cmp-before cmp-sheet" aria-label="Таблица с ошибкой в формуле">
-              <span class="cmp-formula">fx&nbsp;&nbsp;=СУММ(B2:B41)</span>
-              <span class="cmp-cells">
+          <li class="cmp" style="--i:3; --bx:-20px; --by:14px; --br:3deg">
+            <div class="cmp-inner">
+              <div class="cmp-face cmp-before cmp-sheet">
+                <span class="cmp-formula">fx&nbsp;&nbsp;=СУММ(B2:B41)</span>
+                <span class="cmp-cells">
                 <i>Выручка, неделя</i><i class="err">#ЗНАЧ!</i>
                 <i>Наличные</i><i>?</i>
                 <i>Kaspi</i><i>1 240 000</i>
               </span>
-            </div>
-            <div class="cmp-face cmp-after">
-              <span class="cmp-icon"><svg aria-hidden="true"><use href="#i-bar-chart"/></svg></span>
+              </div>
+              <div class="cmp-face cmp-after">
+                <span class="cmp-icon"><svg aria-hidden="true"><use href="#i-bar-chart"/></svg></span>
               <div>
                 <b class="cmp-title">Продажи за&nbsp;неделю: 2&nbsp;450&nbsp;000&nbsp;₸</b>
                 <p>По&nbsp;каждому филиалу, с&nbsp;отменами и&nbsp;удержаниями. Без формул</p>
               </div>
-            </div>
-          </li>
-          <li class="cmp" style="--i:5; --bx:12px; --by:20px; --br:-4.5deg">
-            <div class="cmp-face cmp-before cmp-paper">
-              Асель&nbsp;— скидка 10%<br>(не&nbsp;забыть!!)
-            </div>
-            <div class="cmp-face cmp-after">
-              <span class="cmp-icon"><svg aria-hidden="true"><use href="#i-check-verified"/></svg></span>
-              <div>
-                <b class="cmp-title">Промокод на&nbsp;скидку 10%</b>
-                <p>Клиент вводит его сам при оформлении, скидка считается автоматически</p>
               </div>
             </div>
           </li>
@@ -188,59 +173,77 @@
   <section class="section sheet journey" id="journey" aria-labelledby="journey-title">
     <div class="wrap">
       <div class="section-head">
-        <h2 id="journey-title">Путь одного заказа: от&nbsp;телефона клиента до&nbsp;его двери</h2>
+        <h2 id="journey-title">Путь одного заказа: от&nbsp;телефона клиента до&nbsp;вашей выручки</h2>
         <p>Пять шагов. Люди нужны только там, где нужны руки: готовить, фасовать и&nbsp;везти. Остальное система делает сама.</p>
       </div>
 
-      <div class="journey-grid">
+    </div>
+    <div class="journey-scroller" data-journey-scroller>
+      <div class="journey-pin">
+        <div class="wrap journey-grid">
         <ol class="journey-steps" data-journey>
-          <li class="j-step is-active" data-step="0">
+          <li class="j-step is-active" data-step="0" data-stage="phone:programs">
             <span class="j-num" aria-hidden="true">1</span>
             <div class="j-text">
-              <h3>Клиент выбирает рацион</h3>
+              <h3><button type="button" class="j-head">Клиент выбирает рацион</button></h3>
+              <div class="j-body"><div>
               <p>Открывает ваше приложение, выбирает программу и&nbsp;калорийность, смотрит меню на&nbsp;каждый день и&nbsp;цену. Не&nbsp;знает свою норму калорий&nbsp;— приложение посчитает.</p>
               <p class="j-actor"><svg aria-hidden="true"><use href="#i-user"/></svg>Клиент, сам</p>
+              </div></div>
             </div>
             <div class="j-screen"><div class="phone" data-phone="programs"></div></div>
           </li>
-          <li class="j-step" data-step="1">
+          <li class="j-step" data-step="1" data-stage="phone:checkout">
             <span class="j-num" aria-hidden="true">2</span>
             <div class="j-text">
-              <h3>Оформляет и&nbsp;оплачивает</h3>
-              <p>Адрес отмечает на&nbsp;карте, время доставки выбирает из&nbsp;ваших окон, аллергии&nbsp;— до&nbsp;трёх, галочками. Промокод и&nbsp;оплата через Kaspi или картой&nbsp;— там&nbsp;же.</p>
+              <h3><button type="button" class="j-head">Оформляет и&nbsp;оплачивает</button></h3>
+              <div class="j-body"><div>
+              <p>Ставит адрес на&nbsp;карте, выбирает время доставки из&nbsp;ваших окон и&nbsp;отмечает аллергии. Промокод и&nbsp;оплата через Kaspi или картой&nbsp;— там&nbsp;же.</p>
               <p class="j-actor"><svg aria-hidden="true"><use href="#i-user"/></svg>Клиент, сам</p>
+              </div></div>
             </div>
             <div class="j-screen"><div class="phone" data-phone="checkout"></div></div>
           </li>
-          <li class="j-step" data-step="2">
+          <li class="j-step" data-step="2" data-stage="admin:cooking">
             <span class="j-num" aria-hidden="true">3</span>
             <div class="j-text">
-              <h3>Кухня видит, что готовить</h3>
+              <h3><button type="button" class="j-head">Кухня видит, что готовить</button></h3>
+              <div class="j-body"><div>
               <p>План приготовления собирается сам: сколько комплектов, каких программ и&nbsp;калорийности, у&nbsp;кого аллергия. Никто ничего не&nbsp;переписывает из&nbsp;чатов.</p>
               <p class="j-actor"><svg aria-hidden="true"><use href="#i-user"/></svg>Повара</p>
+              </div></div>
             </div>
             <div class="j-screen"><div class="admin" data-admin="cooking" data-nav="cooking"></div></div>
           </li>
-          <li class="j-step" data-step="3">
+          <li class="j-step" data-step="3" data-stage="admin:deliveries">
             <span class="j-num" aria-hidden="true">4</span>
             <div class="j-text">
-              <h3>Фасовка и&nbsp;доставка</h3>
+              <h3><button type="button" class="j-head">Фасовка и&nbsp;доставка</button></h3>
+              <div class="j-body"><div>
               <p>Менеджер фасовки видит, что положить в&nbsp;каждый пакет. Заказ попадает к&nbsp;курьерам своей зоны&nbsp;— автоматически и&nbsp;поровну между ними.</p>
               <p class="j-actor"><svg aria-hidden="true"><use href="#i-user"/></svg>Фасовка и&nbsp;курьеры</p>
+              </div></div>
             </div>
             <div class="j-screen"><div class="admin" data-admin="deliveries" data-nav="deliveries"></div></div>
           </li>
-          <li class="j-step" data-step="4">
+          <li class="j-step" data-step="4" data-stage="admin:stats">
             <span class="j-num" aria-hidden="true">5</span>
             <div class="j-text">
-              <h3>Вы видите деньги</h3>
+              <h3><button type="button" class="j-head">Вы видите деньги</button></h3>
+              <div class="j-body"><div>
               <p>Продажи и&nbsp;заказы по&nbsp;каждому филиалу&nbsp;— за&nbsp;сегодня или любой период. Отмены и&nbsp;возвраты посчитаны с&nbsp;вашим процентом удержания.</p>
               <p class="j-actor"><svg aria-hidden="true"><use href="#i-user"/></svg>Вы</p>
+              </div></div>
             </div>
             <div class="j-screen"><div class="admin" data-admin="stats" data-nav="stats"></div></div>
           </li>
         </ol>
-        <div class="journey-stage" data-journey-stage aria-hidden="true"></div>
+          <div class="journey-stage" data-journey-stage aria-hidden="true"></div>
+        </div>
+        <div class="wrap journey-nav" data-journey-nav>
+          <div class="journey-dots" role="group" aria-label="Шаги"></div>
+          <button type="button" class="btn btn-quiet btn-sm" data-journey-next>Дальше</button>
+        </div>
       </div>
     </div>
   </section>
@@ -250,7 +253,7 @@
     <div class="wrap">
       <div class="section-head">
         <h2 id="app-title">Приложение, в&nbsp;котором клиент всё делает сам</h2>
-        <p>То, о&nbsp;чём сейчас пишут менеджеру, клиент решает в&nbsp;пару касаний. Меньше переписки у&nbsp;вас&nbsp;— проще продлить заказ у&nbsp;него.</p>
+        <p>Пауза, новый адрес, другое время, продление&nbsp;— без сообщений менеджеру и&nbsp;без звонков.</p>
       </div>
 
       <div class="app-grid" data-tabs="app">
@@ -271,16 +274,12 @@
             <span class="app-tab-icon"><svg aria-hidden="true"><use href="#i-edit-2"/></svg></span>
             <span class="app-tab-text"><b>Изменения без звонков</b><span>Адрес, время, калораж, дни без доставки и&nbsp;продление&nbsp;— в&nbsp;управлении заказом.</span></span>
           </button>
-          <button class="app-tab" type="button" role="tab" id="app-tab-4" aria-selected="false" aria-controls="app-panel" tabindex="-1">
-            <span class="app-tab-icon"><svg aria-hidden="true"><use href="#i-key-01"/></svg></span>
-            <span class="app-tab-text"><b>Вход по&nbsp;номеру телефона</b><span>Код приходит в&nbsp;WhatsApp или Telegram, дальше&nbsp;— Face&nbsp;ID. Без паролей.</span></span>
-          </button>
         </div>
         <p class="app-desc" data-app-desc aria-hidden="true">Календарь питания: все приёмы пищи, фото блюд и&nbsp;время доставки.</p>
         <div class="app-showcase" id="app-panel" role="tabpanel" aria-labelledby="app-tab-0">
           <p class="sr-only" data-app-caption>На экране телефона: меню на каждый день.</p>
           <div class="app-disc" aria-hidden="true"></div>
-          <div class="phone" data-phone="day calculator hold order signin" aria-hidden="true"></div>
+          <div class="phone is-push" data-phone="day calculator hold order" aria-hidden="true"></div>
         </div>
       </div>
     </div>
@@ -302,57 +301,43 @@
           <button type="button" role="tab" id="team-tab-3" aria-selected="false" aria-controls="team-panel-3" tabindex="-1">Доставка</button>
         </div>
 
-        <div class="team-panel" role="tabpanel" id="team-panel-0" aria-labelledby="team-tab-0">
-          <div class="team-text">
+        <div class="team-body">
+          <div class="team-texts">
+            <div class="team-text is-active" role="tabpanel" id="team-panel-0" aria-labelledby="team-tab-0">
             <h3>Видите деньги и&nbsp;всю сеть сразу</h3>
             <ul class="ticks">
               <li>Продажи и&nbsp;заказы по&nbsp;каждому филиалу&nbsp;— за&nbsp;день или любой период</li>
-              <li>Филиалы в&nbsp;разных городах и&nbsp;валютах: тенге, сумы, дирхамы</li>
+              <li>Филиалы в&nbsp;разных городах и&nbsp;странах, каждый в&nbsp;своей валюте</li>
               <li>История действий: видно, кто из&nbsp;сотрудников и&nbsp;что изменил</li>
-              <li>Свой процент удержания при отмене&nbsp;— для компании или филиала</li>
+              <li>Сколько удерживать при отмене, решаете вы</li>
             </ul>
-            <p class="team-roles">Роль в&nbsp;панели: <span class="tag tag-ghost">Администратор бизнеса</span></p>
-          </div>
-          <div class="team-visual"><div class="admin" data-admin="stats" data-nav="stats" aria-hidden="true"></div></div>
-        </div>
-
-        <div class="team-panel" role="tabpanel" id="team-panel-1" aria-labelledby="team-tab-1" hidden>
-          <div class="team-text">
+            </div>
+            <div class="team-text" role="tabpanel" id="team-panel-1" aria-labelledby="team-tab-1">
             <h3>Клиенты и&nbsp;отмены&nbsp;— без таблиц</h3>
             <ul class="ticks">
               <li>Клиенты по&nbsp;спискам: потенциальные, на&nbsp;продление, отказники</li>
               <li>Запросы на&nbsp;отмену с&nbsp;готовым расчётом: сколько вернуть и&nbsp;сколько удержать</li>
               <li>Промокоды на&nbsp;скидку&nbsp;— клиент вводит их&nbsp;сам при оформлении</li>
             </ul>
-            <p class="team-roles">Роли в&nbsp;панели: <span class="tag tag-ghost">Аккаунт менеджер</span> <span class="tag tag-ghost">Администратор филиала</span></p>
-          </div>
-          <div class="team-visual"><div class="admin" data-admin="customers" data-nav="customers" aria-hidden="true"></div></div>
-        </div>
-
-        <div class="team-panel" role="tabpanel" id="team-panel-2" aria-labelledby="team-tab-2" hidden>
-          <div class="team-text">
+            </div>
+            <div class="team-text" role="tabpanel" id="team-panel-2" aria-labelledby="team-tab-2">
             <h3>План на&nbsp;день собирается сам</h3>
             <ul class="ticks">
               <li>План приготовления: сколько комплектов и&nbsp;каких программ</li>
               <li>Аллергии и&nbsp;исключения у&nbsp;каждого заказа&nbsp;— на&nbsp;виду, цветом</li>
               <li>План фасовки, справочник блюд, программы питания и&nbsp;планировщик меню</li>
             </ul>
-            <p class="team-roles">Роли в&nbsp;панели: <span class="tag tag-ghost">Старший повар</span> <span class="tag tag-ghost">Повар</span> <span class="tag tag-ghost">Менеджер фасовки</span></p>
-          </div>
-          <div class="team-visual"><div class="admin" data-admin="cooking" data-nav="cooking" aria-hidden="true"></div></div>
-        </div>
-
-        <div class="team-panel" role="tabpanel" id="team-panel-3" aria-labelledby="team-tab-3" hidden>
-          <div class="team-text">
+            </div>
+            <div class="team-text" role="tabpanel" id="team-panel-3" aria-labelledby="team-tab-3">
             <h3>Каждый курьер получает заказы своей зоны</h3>
             <ul class="ticks">
               <li>Зоны доставки рисуются прямо на&nbsp;карте города</li>
               <li>Заказы зоны делятся между её&nbsp;курьерами автоматически и&nbsp;поровну</li>
               <li>Окна доставки: утром в&nbsp;день питания или вечером накануне</li>
             </ul>
-            <p class="team-roles">Роль в&nbsp;панели: <span class="tag tag-ghost">Старший курьер</span></p>
+            </div>
           </div>
-          <div class="team-visual"><div class="admin" data-admin="zones" data-nav="zones" aria-hidden="true"></div></div>
+          <div class="team-visual"><div class="admin" data-admin="history customers cooking zones" aria-hidden="true"></div></div>
         </div>
       </div>
     </div>
@@ -370,7 +355,6 @@
           <label class="brand-opt"><input type="radio" name="brand" value="oat"><span class="brand-sw" style="--sw:#c2410c"></span><span>Овсянка</span></label>
           <label class="brand-opt"><input type="radio" name="brand" value="lab"><span class="brand-sw" style="--sw:#3b5bdb"></span><span>FitLab</span></label>
         </fieldset>
-        <p class="brand-note">«Овсянка» и&nbsp;FitLab&nbsp;— вымышленные бренды для примера.</p>
       </div>
 
       <div class="brand-stage" data-brand="eatme" aria-hidden="true">
@@ -391,71 +375,27 @@
     </div>
   </section>
 
-  <!-- 7. Scale + how to start -->
-  <section class="section sheet grow" aria-labelledby="grow-title">
-    <div class="wrap">
-      <div class="section-head">
-        <h2 id="grow-title">Один филиал или сеть в&nbsp;трёх странах</h2>
-        <p>Добавляйте города, кухни и&nbsp;сотрудников, когда растёте. У&nbsp;каждого филиала свои зоны, курьеры, меню и&nbsp;валюта.</p>
-      </div>
-
-      <div class="grow-grid">
-        <div class="grow-block grow-branches">
-          <h3>Филиалы и&nbsp;валюты</h3>
-          <ul class="branches">
-            <li><span>Алматы</span><b>5&nbsp;240&nbsp;000&nbsp;₸</b></li>
-            <li><span>Астана</span><b>3&nbsp;180&nbsp;000&nbsp;₸</b></li>
-            <li><span>Ташкент</span><b>48&nbsp;600&nbsp;000&nbsp;сум</b></li>
-            <li><span>Дубай</span><b>96&nbsp;400&nbsp;AED</b></li>
-          </ul>
-          <p class="grow-cap">Продажи за&nbsp;сентябрь, пример. Каждый филиал считается в&nbsp;своей валюте.</p>
-        </div>
-        <div class="grow-block grow-roles">
-          <h3>Восемь ролей сотрудников</h3>
-          <p>Каждый видит только свою часть работы и&nbsp;не&nbsp;может случайно сломать чужую.</p>
-          <ul class="role-cloud">
-            <li>Администратор платформы</li>
-            <li>Администратор бизнеса</li>
-            <li>Администратор филиала</li>
-            <li>Аккаунт менеджер</li>
-            <li>Старший повар</li>
-            <li>Повар</li>
-            <li>Менеджер фасовки</li>
-            <li>Старший курьер</li>
-          </ul>
-        </div>
-        <div class="grow-block grow-langs">
-          <h3>Четыре языка</h3>
-          <p>Клиент выбирает язык приложения сам, а&nbsp;названия блюд и&nbsp;программ можно завести на&nbsp;каждом.</p>
-          <ul class="langs">
-            <li lang="ru">Русский</li>
-            <li lang="kk">Қазақша</li>
-            <li lang="en">English</li>
-            <li lang="uz">O‘zbekcha</li>
-          </ul>
-        </div>
-      </div>
-
-      <div class="start" aria-labelledby="start-title">
-        <h2 id="start-title">Как начать</h2>
-        <ol class="start-steps">
-          <li>
-            <span class="start-num" aria-hidden="true">1</span>
-            <h3>Демо на&nbsp;30&nbsp;минут</h3>
-            <p>Показываем приложение и&nbsp;панель на&nbsp;примере вашего меню. Онлайн или у&nbsp;вас в&nbsp;офисе.</p>
-          </li>
-          <li>
-            <span class="start-num" aria-hidden="true">2</span>
-            <h3>Настраиваем под вас</h3>
-            <p>Заводим ваш бренд, блюда, программы, зоны доставки и&nbsp;сотрудников.</p>
-          </li>
-          <li>
-            <span class="start-num" aria-hidden="true">3</span>
-            <h3>Запускаем</h3>
-            <p>Клиенты скачивают ваше приложение, команда работает в&nbsp;панели, мы&nbsp;на&nbsp;связи.</p>
-          </li>
-        </ol>
-      </div>
+  <!-- 7. How to start: a real three-step sequence -->
+  <section class="section sheet start-section" aria-labelledby="start-title">
+    <div class="wrap start">
+      <h2 id="start-title">Как начать</h2>
+      <ol class="start-steps">
+        <li>
+          <span class="start-num" aria-hidden="true">1</span>
+          <h3>Показываем на&nbsp;демо</h3>
+          <p>Показываем приложение и&nbsp;панель на&nbsp;примере вашего меню. Онлайн или у&nbsp;вас в&nbsp;офисе.</p>
+        </li>
+        <li>
+          <span class="start-num" aria-hidden="true">2</span>
+          <h3>Настраиваем под вас</h3>
+          <p>Заводим ваш бренд, блюда, программы, зоны доставки и&nbsp;сотрудников.</p>
+        </li>
+        <li>
+          <span class="start-num" aria-hidden="true">3</span>
+          <h3>Запускаем</h3>
+          <p>Клиенты скачивают ваше приложение, команда работает в&nbsp;панели, мы&nbsp;на&nbsp;связи.</p>
+        </li>
+      </ol>
     </div>
   </section>
 
@@ -466,27 +406,15 @@
       <div class="faq-list">
         <details>
           <summary>Мне нужен свой программист?</summary>
-          <p>Нет. Приложение и&nbsp;панель уже готовы. Мы&nbsp;настраиваем их&nbsp;под ваш бренд, меню и&nbsp;зоны доставки, а&nbsp;обновления выходят без вашего участия.</p>
-        </details>
-        <details>
-          <summary>Можно с&nbsp;моим логотипом и&nbsp;цветами?</summary>
-          <p>Да. Клиенты видят ваше название, иконку, логотип и&nbsp;цвета. Про EatMe они не&nbsp;узнают.</p>
+          <p>Нет. Приложение и&nbsp;панель уже готовы. Мы&nbsp;настраиваем их&nbsp;под ваш бренд, меню и&nbsp;зоны доставки.</p>
         </details>
         <details>
           <summary>У&nbsp;меня несколько городов. Подойдёт?</summary>
           <p>Да. У&nbsp;каждого филиала свои зоны, курьеры и&nbsp;меню, а&nbsp;продажи видно по&nbsp;каждому отдельно&nbsp;— даже в&nbsp;разных валютах.</p>
         </details>
         <details>
-          <summary>Как клиенты платят?</summary>
-          <p>Прямо в&nbsp;приложении: через Kaspi или банковской картой. Промокоды и&nbsp;скидки считаются при оформлении.</p>
-        </details>
-        <details>
-          <summary>Что если клиент уехал или передумал?</summary>
-          <p>Он&nbsp;сам ставит доставку на&nbsp;паузу в&nbsp;пределах лимита заморозок или отправляет запрос на&nbsp;отмену. Менеджер видит готовый расчёт возврата с&nbsp;вашим процентом удержания.</p>
-        </details>
-        <details>
           <summary>Сколько это стоит?</summary>
-          <p>Зависит от&nbsp;числа филиалов и&nbsp;заказов. Посчитаем на&nbsp;демо и&nbsp;пришлём предложение.</p>
+          <p>Зависит от&nbsp;числа филиалов и&nbsp;заказов. Расскажем на&nbsp;звонке и&nbsp;пришлём предложение.</p>
         </details>
       </div>
     </div>
@@ -496,8 +424,8 @@
   <section class="section sheet cta" id="demo" aria-labelledby="demo-title">
     <div class="wrap cta-grid">
       <div class="cta-copy">
-        <h2 id="demo-title">Покажем, как EatMe будет работать у&nbsp;вас</h2>
-        <p>Оставьте телефон&nbsp;— договоримся о&nbsp;демо в&nbsp;удобное время. Покажем приложение и&nbsp;панель на&nbsp;примере вашего меню.</p>
+        <h2 id="demo-title">Покажем EatMe на&nbsp;вашем меню</h2>
+        <p>Оставьте телефон или email&nbsp;— свяжемся и&nbsp;договоримся о&nbsp;времени.</p>
         <img class="cta-art" src="assets/img/pedestal-bag.webp" alt="" width="960" height="698" loading="lazy">
       </div>
 
@@ -509,13 +437,9 @@
             <p class="field-error" id="f-name-error" hidden>Напишите имя, чтобы мы знали, кого спросить</p>
           </div>
           <div class="field">
-            <label for="f-phone">Телефон</label>
-            <input id="f-phone" name="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="+7 700 000 00 00" required aria-describedby="f-phone-error">
-            <p class="field-error" id="f-phone-error" hidden>Нужен номер из&nbsp;10–12 цифр, например +7&nbsp;700&nbsp;000&nbsp;00&nbsp;00</p>
-          </div>
-          <div class="field">
-            <label for="f-company">Название компании <span class="optional">необязательно</span></label>
-            <input id="f-company" name="company" type="text" autocomplete="organization">
+            <label for="f-contact">Телефон или email</label>
+            <input id="f-contact" name="contact" type="text" autocomplete="on" spellcheck="false" autocapitalize="off" placeholder="+7 700 000 00 00 или name@company.kz" required aria-describedby="f-contact-error">
+            <p class="field-error" id="f-contact-error" hidden>Укажите телефон из&nbsp;10–12 цифр или email, например name@company.kz</p>
           </div>
           <fieldset class="field">
             <legend>Сколько заказов в&nbsp;день</legend>
@@ -527,12 +451,12 @@
             </div>
           </fieldset>
           <button class="btn btn-primary btn-lg btn-block" type="submit">Получить демо</button>
-          <p class="form-note">Это концепт: форма ничего никуда не&nbsp;отправляет.</p>
+          <p class="form-note">Это демо-страница: заявка никуда не&nbsp;отправится.</p>
         </form>
         <div class="cta-done" data-demo-done hidden tabindex="-1">
           <span class="cta-done-icon" aria-hidden="true"><svg><use href="#i-check-circle"/></svg></span>
           <h3>Заявка на&nbsp;демо принята</h3>
-          <p>В&nbsp;рабочей версии менеджер перезвонит в&nbsp;течение дня. Сейчас это концепт: данные остались на&nbsp;этой странице и&nbsp;никуда не&nbsp;отправлены.</p>
+          <p>В&nbsp;рабочей версии менеджер свяжется с&nbsp;вами по&nbsp;телефону или почте. Это демо-страница: заявка никуда не&nbsp;ушла.</p>
           <button class="btn btn-quiet" type="button" data-demo-reset>Заполнить ещё раз</button>
         </div>
       </div>
@@ -546,7 +470,7 @@
       <svg class="logo-mark" aria-hidden="true"><use href="#i-wordmark"/></svg>
       <span class="logo-tag">для бизнеса</span>
     </a>
-    <p>Концепт лендинга, ноябрь 2026. Форма ничего не&nbsp;отправляет. Экраны собраны по&nbsp;макетам и&nbsp;коду приложения и&nbsp;панели EatMe; цифры и&nbsp;имена&nbsp;— примеры.</p>
+    <p>Концепт лендинга EatMe, ноябрь 2026. Цифры, имена и&nbsp;бренды на&nbsp;экранах&nbsp;— примеры.</p>
   </div>
 </footer>
 
@@ -640,24 +564,34 @@
 </template>
 
 <template id="tpl-ad-stats">
-  <div class="ad-title">Статистика продаж</div>
-  <div class="ad-sub">1–30 сентября</div>
-  <div class="ad-h ad-mt">Продажи (отправлено)</div>
-  <div class="ad-cap">Стоимость доставленного за&nbsp;период и&nbsp;удержания отмен</div>
-  <div class="ad-grid4">
-    <div class="ad-card ad-stat"><small>Алматы</small><b>5&nbsp;240&nbsp;000&nbsp;₸</b></div>
-    <div class="ad-card ad-stat"><small>Астана</small><b>3&nbsp;180&nbsp;000&nbsp;₸</b></div>
-    <div class="ad-card ad-stat"><small>Ташкент</small><b>48&nbsp;600&nbsp;000&nbsp;сум</b></div>
-    <div class="ad-card ad-stat"><small>Дубай</small><b>96&nbsp;400&nbsp;AED</b></div>
-  </div>
-  <div class="ad-rule"></div>
-  <div class="ad-h">Всего заказов: 1&nbsp;024</div>
-  <div class="ad-cap">По&nbsp;филиалам</div>
-  <div class="ad-grid4">
-    <div class="ad-card ad-stat"><small>Алматы</small><b>412</b></div>
-    <div class="ad-card ad-stat"><small>Астана</small><b>296</b></div>
-    <div class="ad-card ad-stat"><small>Ташкент</small><b>201</b></div>
-    <div class="ad-card ad-stat"><small>Дубай</small><b>115</b></div>
+  <div class="ad-stats-layout">
+    <div class="ad-stats-main">
+      <div class="ad-title">Статистика продаж</div>
+      <div class="ad-sub">1–30 сентября</div>
+      <div class="ad-h ad-mt">Продажи (отправлено)</div>
+      <div class="ad-cap">Стоимость доставленного за&nbsp;период и&nbsp;удержания отмен</div>
+      <div class="ad-grid4">
+        <div class="ad-card ad-stat"><small>Алматы</small><b>5&nbsp;240&nbsp;000&nbsp;₸</b></div>
+        <div class="ad-card ad-stat"><small>Астана</small><b>3&nbsp;180&nbsp;000&nbsp;₸</b></div>
+        <div class="ad-card ad-stat"><small>Шымкент</small><b>2&nbsp;460&nbsp;000&nbsp;₸</b></div>
+        <div class="ad-card ad-stat"><small>Ташкент</small><b>48&nbsp;600&nbsp;000&nbsp;сум</b></div>
+      </div>
+      <div class="ad-rule"></div>
+      <div class="ad-h">Всего заказов: 1&nbsp;024</div>
+      <div class="ad-cap">По&nbsp;филиалам</div>
+      <div class="ad-grid4">
+        <div class="ad-card ad-stat"><small>Алматы</small><b>412</b></div>
+        <div class="ad-card ad-stat"><small>Астана</small><b>296</b></div>
+        <div class="ad-card ad-stat"><small>Шымкент</small><b>188</b></div>
+        <div class="ad-card ad-stat"><small>Ташкент</small><b>128</b></div>
+      </div>
+    </div>
+    <div class="ad-card ad-period">
+      <b>Выберите дату или период</b>
+      <small>Сентябрь 2026</small>
+      <div class="ad-cal" data-ad-calendar="2026-09"></div>
+      <span class="ad-btn ad-btn-sm ad-btn-green">Применить</span>
+    </div>
   </div>
 </template>
 
@@ -718,6 +652,27 @@
   </div>
 </template>
 
+<template id="tpl-ad-history">
+  <div class="ad-title">История действий</div>
+  <div class="ad-sub">Кто и&nbsp;что изменил, филиал Алматы</div>
+  <div class="ad-table-head">
+    <span class="ad-chip">Все сотрудники <svg><use href="#i-chevron-down"/></svg></span>
+    <span class="ad-chip">Все разделы <svg><use href="#i-chevron-down"/></svg></span>
+    <span class="ad-chip">Сегодня <svg><use href="#i-chevron-down"/></svg></span>
+  </div>
+  <div class="ad-card ad-table-card">
+    <div class="ad-table ad-history">
+      <div class="ad-tr ad-th"><span>Время</span><span>Сотрудник</span><span>Действие</span></div>
+      <div class="ad-tr"><span><b>10:42</b></span><span><b>Айгерим Нурланова</b><small>Администратор бизнеса</small></span><span><b>Удержание при отмене: 10&nbsp;% → 15&nbsp;%</b><small>Настройки филиала</small></span></div>
+      <div class="ad-tr"><span><b>10:15</b></span><span><b>Ержан Садыков</b><small>Старший курьер</small></span><span><b>Заменил курьера в&nbsp;заказе №121021</b><small>Запланированные доставки</small></span></div>
+      <div class="ad-tr"><span><b>09:58</b></span><span><b>Марат Искаков</b><small>Аккаунт-менеджер</small></span><span><b>Создал промокод START10</b><small>Промокоды</small></span></div>
+      <div class="ad-tr"><span><b>09:31</b></span><span><b>Дина Ли</b><small>Старший повар</small></span><span><b>Заменила ужин 25&nbsp;сентября в&nbsp;программе «Кето»</b><small>Планировщик питания</small></span></div>
+      <div class="ad-tr"><span><b>09:02</b></span><span><b>Асель Кенжебаева</b><small>Администратор филиала</small></span><span><b>Вернула 37&nbsp;260&nbsp;₸ по&nbsp;заказу №120871</b><small>Запросы на&nbsp;отмену</small></span></div>
+      <div class="ad-tr"><span><b>08:47</b></span><span><b>Айгерим Нурланова</b><small>Администратор бизнеса</small></span><span><b>Цена программы «Стандарт»: 6&nbsp;500 → 6&nbsp;900&nbsp;₸</b><small>Программы питания</small></span></div>
+    </div>
+  </div>
+</template>
+
 <template id="tpl-ph-program">
   <div class="ph-top">
     <svg class="ph-ic"><use href="#i-arrow-left"/></svg>
@@ -735,7 +690,7 @@
     <div class="ph-dish"><img src="assets/img/dish-seafood.webp" alt=""><span><small>Ужин, 19:00–21:00</small><b>Морепродукты с&nbsp;овощами</b></span></div>
     <div class="ph-more">и&nbsp;ещё 3&nbsp;блюда</div>
     <div class="ph-price"><small>За&nbsp;1 день питания</small><b data-k="price">6&nbsp;900&nbsp;₸</b></div>
-    <div class="ph-cta">Оформить заказ</div>
+    <div class="ph-cta" data-k="cta"><span class="ph-cta-label">Оформить заказ</span><i class="ph-spinner"></i></div>
   </div>
 </template>
 
@@ -779,19 +734,19 @@
 <template id="tpl-ph-checkout">
   <div class="ph-top">
     <svg class="ph-ic"><use href="#i-arrow-left"/></svg>
-    <span class="ph-top-t"><b>Оформление</b><small>Стандарт, 14 дней</small></span>
+    <span class="ph-top-t"><b>Оформление</b><small data-k="co-sub">Стандарт, 14 дней</small></span>
     <span class="ph-ic"></span>
   </div>
   <div class="ph-sheet ph-form">
     <div class="ph-row"><svg><use href="#i-map-pin"/></svg><span><small>Адрес доставки</small><b>Алматы, ул.&nbsp;Сатпаева,&nbsp;30</b></span><em>Изменить</em></div>
     <div class="ph-row"><svg><use href="#i-calendar"/></svg><span><small>Время доставки</small><b>07:00–10:00, в&nbsp;день питания</b></span></div>
-    <div class="ph-row"><svg><use href="#i-hearts"/></svg><span><small>Аллергии, до&nbsp;трёх</small><span class="ph-tags"><i>Орехи</i><i>Лактоза</i></span></span></div>
+    <div class="ph-row"><svg><use href="#i-hearts"/></svg><span><small>Аллергии</small><span class="ph-tags" data-k="co-tags"><i>Орехи</i></span></span></div>
     <div class="ph-row"><svg><use href="#i-check-verified"/></svg><span><small>Промокод</small><b>START10, скидка 10%</b></span></div>
     <div class="ph-h ph-mt">Способы оплаты</div>
     <div class="ph-pay on"><img src="assets/img/kaspi.webp" alt=""><span><b>Kaspi.kz</b><small>В&nbsp;мобильном приложении</small></span><i class="ph-radio"></i></div>
     <div class="ph-pay"><svg><use href="#i-payment-card-solid"/></svg><span><b>Банковской картой</b></span><i class="ph-radio"></i></div>
-    <div class="ph-total"><small>К&nbsp;оплате</small><b>86&nbsp;940&nbsp;₸</b></div>
-    <div class="ph-cta">Оплатить</div>
+    <div class="ph-total"><small>К&nbsp;оплате</small><b data-k="co-total">86&nbsp;940&nbsp;₸</b></div>
+    <div class="ph-cta" data-k="cta"><span class="ph-cta-label">Оплатить</span><i class="ph-spinner"></i></div>
   </div>
 </template>
 
@@ -873,25 +828,6 @@
     </div>
     <div class="ph-notice ph-notice-ok"><svg><use href="#i-check-circle"/></svg>Первая доставка по&nbsp;новому адресу&nbsp;— 25&nbsp;сентября, 07:00–10:00</div>
     <div class="ph-cta">Продлить заказ</div>
-  </div>
-</template>
-
-<template id="tpl-ph-signin">
-  <div class="ph-top">
-    <svg class="ph-ic"><use href="#i-arrow-left"/></svg>
-    <span class="ph-top-t"></span>
-    <span class="ph-ic"></span>
-  </div>
-  <div class="ph-pad ph-signin">
-    <div class="ph-title">Куда отправить код</div>
-    <p class="ph-sub">На&nbsp;номер +7&nbsp;700&nbsp;000&nbsp;00&nbsp;00</p>
-    <div class="ph-channel"><img src="assets/img/whatsapp.webp" alt=""><span><b>WhatsApp</b><small>Отправим сообщением в&nbsp;мессенджер</small></span><svg><use href="#i-chevron-right"/></svg></div>
-    <div class="ph-channel"><img src="assets/img/telegram.webp" alt=""><span><b>Telegram</b><small>Отправим сообщением в&nbsp;мессенджер</small></span><svg><use href="#i-chevron-right"/></svg></div>
-    <div class="ph-faceid">
-      <svg><use href="#i-auth-face-id"/></svg>
-      <b>Включите доступ к&nbsp;Face&nbsp;ID</b>
-      <small>Позволит входить быстрее, чем по&nbsp;коду быстрого доступа</small>
-    </div>
   </div>
 </template>
 
