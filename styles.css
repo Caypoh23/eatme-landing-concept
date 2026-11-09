@@ -176,9 +176,11 @@ p { text-wrap: pretty; }
 
 .hero-demo { position: relative; display: grid; min-width: 0; }
 .hero-stage, .hero-toggle { grid-area: 1 / 1; }
-.hero-stage { position: relative; aspect-ratio: 760 / 570; }
-.hero-stage .admin { position: absolute; top: 0; right: 0; width: 73%; }
-.hero-stage .phone { position: absolute; left: 0; bottom: 0; z-index: 2; width: 30%; }
+.hero-stage { position: relative; display: grid; }
+/* Panel and phone share one grid cell, so the scene is always as tall as whichever reaches lower */
+.hero-stage > .admin, .hero-stage > .phone { grid-area: 1 / 1; align-self: start; }
+.hero-stage .admin { justify-self: end; width: 73%; }
+.hero-stage .phone { position: relative; z-index: 2; justify-self: start; width: 30%; margin-top: 16%; }
 .flyer {
   position: absolute; left: 0; top: 0; z-index: 3;
   display: inline-flex; align-items: center; gap: 0.5rem;
@@ -950,7 +952,7 @@ h3 { font-size: clamp(1.25rem, 1.1rem + 0.5vw, 1.5rem); line-height: 1.2; letter
 }
 
 /* ---------- Responsive ---------- */
-@media (max-width: 1100px) {
+@media (max-width: 900px) {
   .hero-grid { grid-template-columns: minmax(0, 1fr); }
   .hero h1 { max-width: 18ch; }
   .hero-demo { width: min(100%, 52rem); }
@@ -1021,9 +1023,8 @@ h3 { font-size: clamp(1.25rem, 1.1rem + 0.5vw, 1.5rem); line-height: 1.2; letter
   .team-tabs { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 @media (max-width: 640px) {
-  .hero-stage { aspect-ratio: 360 / 700; }
   .hero-stage .admin { width: 100%; }
-  .hero-stage .phone { left: auto; right: 0; width: 40%; }
+  .hero-stage .phone { justify-self: end; width: 40%; margin-top: 106%; }
   .hero-toggle { justify-self: start; margin: 0 0 0.25rem 0.25rem; }
   .logo-tag { display: none; }
   .header-row { gap: 0.625rem; }

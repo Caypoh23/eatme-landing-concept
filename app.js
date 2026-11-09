@@ -656,115 +656,56 @@
       focusTimer = window.setTimeout(() => focusScreen(desktop() ? shown : $('.j-screen', steps[index])), desktop() ? 0 : 300);
     }
 
-    /* Desktop: one wheel or trackpad gesture, or one key press, moves exactly one step. The step
-       animation starts with the gesture itself (no correction after the visitor stops), trackpad
-       momentum is swallowed, and the page is let go past the first and the last step. */
+    /* Desktop: scrolling stays 100% native — no wheel interception, no locks, no correction after
+       the visitor stops, so trackpad momentum and mice behave exactly as everywhere else. The scene
+       is pinned and shows exactly one step: the step changes when the scroll passes the middle
+       between two steps. Keys and clicks on a step title move one step with a native smooth scroll. */
     const position = () => (window.scrollY - startY()) / unit();
-    let animating = false;
-    let animStart = 0;
-    let animTimer = 0;
-    let lockUntil = 0;
-    let lastAbs = 0;
-    let lastWheel = 0;
     let queued = false;
-    let settleTimer = 0;
-
-    function endStep() {
-      animating = false;
-      window.clearTimeout(animTimer);
-      lockUntil = Math.max(lockUntil, performance.now() + 150);
-    }
-    // One native smooth scroll per step: the browser animates it on the compositor, so it stays
-    // smooth while the scene changes screens. (Per-frame scrollTo would restart the page's CSS
-    // smooth scrolling on every frame and lag.)
-    function goToStep(index) {
-      const target = clamp(index);
-      const to = startY() + target * unit();
-      activate(target);
-      if (Math.abs(to - window.scrollY) < 2) return;
-      animating = true;
-      animStart = performance.now();
-      lockUntil = animStart + 900;
-      window.clearTimeout(animTimer);
-      animTimer = window.setTimeout(endStep, 900);
-      window.scrollTo({ top: to, behavior: reduceMotion ? 'instant' : 'smooth' });
-    }
+    let keyTarget = -1;
+    let keyTimer = 0;
 
     function fromScroll() {
       queued = false;
-      if (!desktop() || animating) return;
-      activate(clamp(Math.round(position())));
-    }
-
-    // Leaving the scene: up from the first step, down from the last one.
-    const leaving = (pos, dir) => (pos <= 0.02 && dir < 0) || (pos >= n - 1 - 0.02 && dir > 0);
-
-    window.addEventListener('wheel', (event) => {
-      if (!desktop() || event.ctrlKey || Math.abs(event.deltaY) <= Math.abs(event.deltaX)) return;
+      if (!desktop()) return;
       const pos = position();
-      const dir = Math.sign(event.deltaY);
-      if (pos < -0.5 || pos > n - 0.5 || !dir) return;
-      const now = performance.now();
-      const abs = Math.abs(event.deltaY);
-      // A new gesture shows up as a jump in speed after a pause or a decaying momentum tail.
-      const fresh = now - lastWheel > 220 || abs > lastAbs * 1.6 + 4;
-      lastAbs = abs;
-      lastWheel = now;
-      const locked = animating || now < lockUntil;
-      if (!locked && leaving(pos, dir)) return;
-      event.preventDefault();
-      // Momentum is swallowed; a fresh gesture may retarget once the current step is mostly done.
-      const canRetarget = fresh && (!animating || now - animStart > 420);
-      if (locked && !canRetarget) {
-        lockUntil = Math.max(lockUntil, now + 200);
-        return;
+      // While a key/click scroll is on its way, keep the target on screen instead of flashing the steps in between.
+      if (keyTarget >= 0) {
+        if (Math.abs(pos - keyTarget) < 0.02) keyTarget = -1;
+        else return;
       }
-      if (animating && leaving(clamp(Math.round(pos)), dir)) return;
-      const k = Math.round(pos);
-      const onStep = Math.abs(pos - k) < 0.02;
-      goToStep(onStep ? k + dir : dir > 0 ? Math.ceil(pos) : Math.floor(pos));
-    }, { passive: false });
-
-    window.addEventListener('keydown', (event) => {
-      if (!desktop() || event.defaultPrevented || event.altKey || event.ctrlKey || event.metaKey) return;
-      if (event.target.closest('input, textarea, select, [contenteditable], [role="tablist"], [role="radiogroup"]')) return;
-      if (event.key === ' ' && event.target.closest('button, a, summary')) return;
-      const dir = event.key === 'ArrowDown' || event.key === 'PageDown' || (event.key === ' ' && !event.shiftKey) ? 1
-        : event.key === 'ArrowUp' || event.key === 'PageUp' || (event.key === ' ' && event.shiftKey) ? -1 : 0;
-      const pos = position();
-      if (!dir || pos < -0.5 || pos > n - 0.5 || leaving(pos, dir)) return;
-      event.preventDefault();
-      if (animating && performance.now() - animStart < 420) return;
-      const k = Math.round(pos);
-      goToStep(Math.abs(pos - k) < 0.02 ? k + dir : dir > 0 ? Math.ceil(pos) : Math.floor(pos));
-    });
-
-    // Scrollbar drags and touch screens scroll natively; when they stop inside the scene, settle on the nearest step.
-    function settleNearest() {
-      if (!desktop() || animating || performance.now() - lastWheel < 400) return;
-      const pos = position();
-      if (pos < -0.3 || pos > n - 1 + 0.3) return;
-      if (Math.abs(pos - Math.round(pos)) > 0.02) goToStep(Math.round(pos));
+      activate(clamp(Math.round(pos)));
+    }
+    function goToStep(index) {
+      const target = clamp(index);
+      activate(target);
+      keyTarget = target;
+      window.clearTimeout(keyTimer);
+      keyTimer = window.setTimeout(() => { keyTarget = -1; fromScroll(); }, 1200);
+      window.scrollTo({ top: startY() + target * unit(), behavior: reduceMotion ? 'instant' : 'smooth' });
     }
     window.addEventListener('scroll', () => {
       if (!queued) {
         queued = true;
         requestAnimationFrame(fromScroll);
       }
-      if (animating) return;
-      window.clearTimeout(settleTimer);
-      settleTimer = window.setTimeout(settleNearest, 'onscrollend' in window ? 500 : 180);
     }, { passive: true });
-    if ('onscrollend' in window) {
-      window.addEventListener('scrollend', () => {
-        if (animating) {
-          endStep();
-          return;
-        }
-        window.clearTimeout(settleTimer);
-        settleNearest();
-      });
-    }
+    // Arrow keys / PageUp / PageDown / Space inside the scene: one step each; at the ends the page scrolls on natively.
+    window.addEventListener('keydown', (event) => {
+      if (!desktop() || event.defaultPrevented || event.altKey || event.ctrlKey || event.metaKey) return;
+      if (event.target.closest('input, textarea, select, [contenteditable], [role="tablist"], [role="radiogroup"]')) return;
+      if (event.key === ' ' && event.target.closest('button, a, summary')) return;
+      const dir = event.key === 'ArrowDown' || event.key === 'PageDown' || (event.key === ' ' && !event.shiftKey) ? 1
+        : event.key === 'ArrowUp' || event.key === 'PageUp' || (event.key === ' ' && event.shiftKey) ? -1 : 0;
+      if (!dir) return;
+      const pos = position();
+      if (pos < -0.5 || pos > n - 0.5) return;
+      const k = Math.round(pos);
+      const target = Math.abs(pos - k) < 0.05 ? k + dir : dir > 0 ? Math.ceil(pos) : Math.floor(pos);
+      if (target < 0 || target > n - 1) return;
+      event.preventDefault();
+      goToStep(target);
+    });
     steps.forEach((step, i) => $('.j-head', step).addEventListener('click', () => {
       if (desktop()) goToStep(i);
     }));
@@ -796,8 +737,12 @@
       if (!desktop()) activate(clamp(Math.round(list.scrollLeft / cardUnit())));
     }, { passive: true });
 
+    // Step titles are buttons only where they do something (the pinned desktop scene).
+    const syncHeads = () => steps.forEach((step) => { $('.j-head', step).tabIndex = desktop() ? 0 : -1; });
     activate(0);
+    syncHeads();
     window.addEventListener('resize', () => {
+      syncHeads();
       measureRail();
       fromScroll();
     });
