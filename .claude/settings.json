@@ -1,0 +1,16 @@
+{
+  "extraKnownMarketplaces": {
+    "agent-kit": {
+      "source": {
+        "source": "github",
+        "repo": "Caypoh23/agent-kit"
+      }
+    }
+  },
+  "enabledPlugins": {
+    "core-process@agent-kit": true,
+    "team-core@agent-kit": true,
+    "team-growth@agent-kit": true,
+    "brain@agent-kit": true
+  }
+}
